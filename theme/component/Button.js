@@ -1,7 +1,9 @@
 const Button = {
   baseStyle: {
     // ...define your base styles
-    borderRadius: "md",
+    // borderRadius: "md",
+    borderRadius: "full",
+    fontWeight: "bold",
     // borderRadius: 'none',
   },
   sizes: {
@@ -12,14 +14,14 @@ const Button = {
       px: "16px",
     },
     md: {
-      h: "32px",
+      h: "36px",
       fontSize: "sm",
-      px: "18px",
+      px: "24px",
     },
     lg: {
-      h: "52px",
+      h: "48px",
       fontSize: "lg",
-      px: "28px",
+      px: "32px",
     },
     xl: {
       h: "60px",
@@ -41,14 +43,17 @@ const Button = {
       },
     },
     solid: {
-      bgColor: "neutral.50",
-      color: "darkTheme.800",
+      bgColor: "primary.300",
+      color: "neutral.50",
       _hover: {
-        bgColor: "neutral.100",
+        bgColor: "primary.200",
         _disabled: {
-          bgColor: "neutral.500",
-          color: "darkTheme.900",
+          bgColor: "priamry.700",
+          color: "neutral.100",
         },
+      },
+      _active: {
+        bgColor: "primary.100",
       },
     },
 
@@ -65,7 +70,7 @@ const Button = {
   },
   defaultProps: {
     size: "md",
-    variant: "ghost",
+    variant: "solid",
   },
 };
 
