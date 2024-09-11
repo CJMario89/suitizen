@@ -15,7 +15,7 @@ const Complete = ({ step }: { step: number }) => {
       bg="darkTheme.700"
       justifyContent="space-between"
       p="4"
-      {...getAnimationStyle(4, step)}
+      {...getAnimationStyle(3, step)}
     >
       <Heading size="md" color="white">
         Your Card is Ready!

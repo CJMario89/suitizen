@@ -25,18 +25,17 @@ export default defineMultiStyleConfig({
       },
       tab: {
         fontWeight: "semibold",
-        _active: {
-          bgColor: "primary.50",
-          color: "neutral.800",
-        },
+        color: "neutral.500",
         _hover: {
-          color: "neutral.700",
+          color: "neutral.400",
+        },
+        _active: {
+          bg: "none",
         },
         _selected: {
           borderColor: "primary.600",
           color: "primary.600 !important",
         },
-        color: "neutral.600",
         borderBottomWidth: "1px",
         borderTopRightRadius: "lg",
         borderTopLeftRadius: "lg",

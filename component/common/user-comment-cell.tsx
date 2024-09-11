@@ -34,7 +34,10 @@ const UserCommentCell = ({
         />
       </Box>
       <Flex flexDirection="column">
-        <Text fontWeight="bold">{card?.lastName}</Text>
+        <Flex gap="1">
+          <Text fontWeight="bold">{card?.firstName}</Text>
+          <Text fontWeight="bold">{card?.lastName}</Text>
+        </Flex>
         <Text {...commentProps}>{content}</Text>
       </Flex>
     </Flex>

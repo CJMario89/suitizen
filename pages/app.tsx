@@ -1,7 +1,4 @@
-import ConnectButton from "@/component/common/connect-button";
 import Dapp from "@/component/dapp";
-import { Box } from "@chakra-ui/react";
-import { useAutoConnectWallet, useCurrentWallet } from "@mysten/dapp-kit";
 
 export const getStaticProps = async () => {
   return {
@@ -12,13 +9,9 @@ export const getStaticProps = async () => {
 };
 
 const DappPage = () => {
-  const { connectionStatus } = useCurrentWallet();
-  const autoConnectStatus = useAutoConnectWallet();
-  return (
-    <Box display={autoConnectStatus === "idle" ? "none" : "flex"}>
-      {connectionStatus === "connected" ? <Dapp /> : <ConnectButton />}
-    </Box>
-  );
+  // const { connectionStatus } = useCurrentWallet();
+  // const autoConnectStatus = useAutoConnectWallet();
+  return <Dapp />;
 };
 
 export default DappPage;

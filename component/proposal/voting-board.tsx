@@ -23,7 +23,7 @@ const VotingBoard = () => {
           Create New Voting
         </Button>
       </Flex>
-      <SimpleGrid columns={3} spacing={{ base: "4", lg: "6" }}>
+      <SimpleGrid columns={3} spacing={{ base: "4", lg: "5" }}>
         {votings?.map((voting) => {
           return <VotingCard key={voting.objectId} voting={voting} />;
         })}

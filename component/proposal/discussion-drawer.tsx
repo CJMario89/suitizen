@@ -4,15 +4,15 @@ import usePostComment from "@/hooks/use-post-comment";
 import {
   Button,
   Divider,
-  Drawer,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Flex,
   Heading,
+  Modal,
   Text,
   Textarea,
 } from "@chakra-ui/react";
@@ -20,7 +20,7 @@ import { useRef } from "react";
 import UserCell from "../common/user-cell";
 import UserCommentCell from "../common/user-comment-cell";
 
-const DiscussionDrawer = ({
+const DiscussionModal = ({
   isOpen,
   onClose,
   discussion,
@@ -59,14 +59,14 @@ const DiscussionDrawer = ({
     }
   };
   return (
-    <Drawer isOpen={isOpen} onClose={onClose}>
-      <DrawerOverlay />
-      <DrawerContent>
-        <DrawerCloseButton />
-        <DrawerHeader px="4" pb="0">
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalCloseButton />
+        <ModalHeader px="4" pb="0">
           <Heading as="h4">{currentDiscussion?.topic}</Heading>
-        </DrawerHeader>
-        <DrawerBody px="0" pt="0">
+        </ModalHeader>
+        <ModalBody px="0" pt="0">
           <Flex flexDirection="column" gap="2" py="2">
             <Flex px="4" flexDirection="column" gap="2">
               <UserCell objectId={currentDiscussion?.proposer} />
@@ -79,7 +79,13 @@ const DiscussionDrawer = ({
               </Flex>
             </Flex>
             <Divider />
-            <Flex px="4" gap="2" flexDirection="column">
+            <Flex
+              px="4"
+              gap="2"
+              flexDirection="column"
+              overflow="auto"
+              maxH="300px"
+            >
               {currentDiscussion?.comments.map((comment, i) => {
                 return (
                   <UserCommentCell
@@ -91,8 +97,8 @@ const DiscussionDrawer = ({
               })}
             </Flex>
           </Flex>
-        </DrawerBody>
-        <DrawerFooter>
+        </ModalBody>
+        <ModalFooter>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -114,10 +120,10 @@ const DiscussionDrawer = ({
               </Button>
             </Flex>
           </form>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 
-export default DiscussionDrawer;
+export default DiscussionModal;

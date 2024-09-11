@@ -30,33 +30,31 @@ export default function FaceDetectionBlock({
       gap="8"
       h="full"
       bg="darkTheme.700"
-      justifyContent="space-between"
+      justifyContent="center"
       p="4"
-      {...getAnimationStyle(2, step)}
+      alignItems="center"
+      {...getAnimationStyle(1, step)}
     >
-      <Heading size="md" color="white">
-        Scan facial features
-      </Heading>
       {isIdle && (
-        <Button
-          mt="20"
-          alignSelf="center"
-          onClick={() => {
-            getFacialData();
-          }}
-          bg="primary.300"
-          color="white"
-          borderRadius="md"
-          size="lg"
-        >
-          Scan
-        </Button>
+        <Flex alignItems="center" justifyContent="center">
+          <Button
+            alignSelf="center"
+            onClick={() => {
+              getFacialData();
+            }}
+            bg="primary.300"
+            color="white"
+          >
+            Scan
+          </Button>
+        </Flex>
       )}
       <Flex
         w="full"
         h="full"
         alignItems="center"
         justifyContent="center"
+        position="absolute"
         zIndex={isIdle ? "-1" : "1"}
       >
         <Flex

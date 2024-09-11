@@ -92,7 +92,7 @@ const useGetFacialData = (options?: UseGetFacialDateOption) => {
               .withFaceLandmarks()
               .withFaceDescriptor();
             if (source?.detection?.score && source?.detection?.score > 0.95) {
-              percentage.current += Math.random() * 5;
+              percentage.current += Math.random() * 3;
               if (
                 source?.detection?.score &&
                 highestSource.current?.score < source.detection.score
@@ -106,7 +106,7 @@ const useGetFacialData = (options?: UseGetFacialDateOption) => {
               source?.detection?.score &&
               source?.detection?.score > 0.85
             ) {
-              percentage.current += Math.random() * 1;
+              percentage.current += Math.random() * 0.5;
               if (
                 source?.detection?.score &&
                 highestSource.current?.score < source.detection.score
@@ -117,7 +117,7 @@ const useGetFacialData = (options?: UseGetFacialDateOption) => {
                 };
               }
             } else {
-              percentage.current -= Math.random() * 3;
+              percentage.current -= Math.random() * 1;
               if (percentage.current < 0) {
                 percentage.current = 0;
               }
@@ -130,7 +130,7 @@ const useGetFacialData = (options?: UseGetFacialDateOption) => {
               resolve(highestSource.current.source);
             }
             update();
-          }, 100);
+          }, 10);
         }
 
         // Load face-api.js models and start detection

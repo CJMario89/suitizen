@@ -9,6 +9,7 @@ import {
   Tooltip,
   IconButton,
   NumberInput,
+  Modal,
 } from "./component";
 import { styles } from "./styles";
 import { fontMap } from "./component/Fonts";
@@ -27,6 +28,7 @@ const getTheme = (locale) =>
       Tooltip,
       Text,
       NumberInput,
+      Modal,
     },
     styles,
     fonts: {
@@ -106,6 +108,15 @@ const getTheme = (locale) =>
       },
       error: {
         500: "#FC8181",
+      },
+    },
+    layerStyles: {
+      base: {
+        bg: "neutral.50",
+        color: "neutral.600",
+      },
+      card: {
+        bg: "linear-gradient(135deg, #1C1C24 0%, #1F1F26 100%)",
       },
     },
   });

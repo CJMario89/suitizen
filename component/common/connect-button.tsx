@@ -64,9 +64,14 @@ const ConnectButton = () => {
             w="fit-content"
             borderRadius="2rem"
             border="none"
-            boxShadow="0px 6px 30px 0px rgba(176, 179, 182, 0.25)"
+            layerStyle="card"
           >
-            <PopoverBody as={VStack} p="4">
+            <PopoverBody
+              as={VStack}
+              p="4"
+              bg="darkTheme.800"
+              borderRadius="2xl"
+            >
               {accounts.map((acc) => (
                 <AddressCell
                   key={acc?.address}

@@ -43,13 +43,15 @@ const Button = {
       },
     },
     solid: {
-      bgColor: "primary.300",
+      bgColor: "primary.400",
       color: "neutral.50",
       _hover: {
-        bgColor: "primary.200",
+        boxShadow: "0px 0px 10px #afd6ff",
+        bgColor: "primary.300",
         _disabled: {
-          bgColor: "priamry.700",
-          color: "neutral.100",
+          bgColor: "primary.400",
+          color: "neutral.200",
+          boxShadow: "none",
         },
       },
       _active: {

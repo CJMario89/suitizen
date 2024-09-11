@@ -48,7 +48,7 @@ const Mint = ({
       bg="darkTheme.700"
       alignItems="center"
       p="4"
-      {...getAnimationStyle(3, step)}
+      {...getAnimationStyle(2, step)}
     >
       {isPreparing ? (
         <Flex
@@ -71,6 +71,7 @@ const Mint = ({
             onClick={() => {
               mint();
             }}
+            className="gradient-border"
           >
             Mint
           </Button>

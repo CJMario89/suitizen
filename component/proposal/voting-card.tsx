@@ -77,7 +77,7 @@ const VotingCard = ({ voting }: { voting: Voting }) => {
     <Flex
       flexDirection="column"
       gap="2"
-      bg="darkTheme.700"
+      layerStyle="card"
       borderRadius="2xl"
       py="2"
     >

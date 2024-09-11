@@ -4,8 +4,10 @@ import useGetDiscussion from "@/hooks/use-get-discussion";
 import {
   Button,
   Flex,
+  Heading,
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
@@ -77,26 +79,48 @@ const CreateDiscussionModal = ({
       }}
     >
       <ModalOverlay />
+      <ModalCloseButton />
       <form onSubmit={onSubmit}>
         <ModalContent>
           <ModalHeader>
-            <Textarea
-              isInvalid={topicError}
-              placeholder="Topic"
-              ref={topicRef}
-            />
-            <ErrorText isError={topicError} errorText={topicErrorText} />
+            <Heading justifyContent="center" w="full">
+              Create New Discussion
+            </Heading>
           </ModalHeader>
           <ModalBody>
-            <Textarea
-              isInvalid={descriptionError}
-              placeholder="Description"
-              ref={descriptionRef}
-            />
-            <ErrorText
-              isError={descriptionError}
-              errorText={descriptionErrorText}
-            />
+            <Flex flexDirection="column" gap="4">
+              <Flex flexDirection="column" gap="2">
+                <Text>
+                  Topic{" "}
+                  <Text as="span" color="error.500">
+                    *
+                  </Text>
+                </Text>
+                <Textarea
+                  isInvalid={topicError}
+                  placeholder="Type your topic here"
+                  ref={topicRef}
+                />
+                <ErrorText isError={topicError} errorText={topicErrorText} />
+              </Flex>
+              <Flex flexDirection="column" gap="2">
+                <Text>
+                  Description{" "}
+                  <Text as="span" color="error.500">
+                    *
+                  </Text>
+                </Text>
+                <Textarea
+                  isInvalid={descriptionError}
+                  placeholder="Type your description here"
+                  ref={descriptionRef}
+                />
+                <ErrorText
+                  isError={descriptionError}
+                  errorText={descriptionErrorText}
+                />
+              </Flex>
+            </Flex>
           </ModalBody>
           <ModalFooter>
             <Flex justifyContent="flex-end" gap="2">

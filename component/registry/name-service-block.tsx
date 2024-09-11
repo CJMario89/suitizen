@@ -15,7 +15,7 @@ const NameServiceBlock = ({
   onConfirm: () => void;
 }) => {
   const { data, isPending } = useGetNameService();
-  console.log(data);
+  console.log(selectedNameService);
   return (
     <Flex
       position="absolute"
@@ -23,10 +23,10 @@ const NameServiceBlock = ({
       flexDirection="column"
       gap="4"
       h="full"
-      bg="darkTheme.700"
+      layerStyle="card"
       justifyContent="space-between"
       p="4"
-      {...getAnimationStyle(1, step)}
+      {...getAnimationStyle(0, step)}
     >
       <Flex gap="4" h="full">
         {!isPending && data?.length === 0 && (
@@ -91,7 +91,7 @@ const NameServiceBlock = ({
           onConfirm();
         }}
         alignSelf="flex-end"
-        size="sm"
+        isDisabled={!selectedNameService}
       >
         Confirm
       </Button>

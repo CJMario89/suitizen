@@ -25,8 +25,9 @@ const DiscussionCard = ({
       cursor="pointer"
       _hover={{
         transform: "scale(1.01)",
-        bg: "darkTheme.600",
+        opacity: 0.9,
       }}
+      layerStyle="card"
       transition="all 0.3s ease-in-out"
       onClick={() => {
         onOpenDrawer({ discussion });

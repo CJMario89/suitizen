@@ -14,6 +14,7 @@ import {
 import { getFullnodeUrl } from "@mysten/sui/client";
 import "@mysten/dapp-kit/dist/index.css";
 import React from "react";
+import BackgroundAnimation from "@/component/common/background-animation";
 React.useLayoutEffect = React.useEffect;
 export default function App({ Component, pageProps }: AppProps) {
   const queryClient = new QueryClient({
@@ -36,6 +37,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <WalletProvider autoConnect>
             <Flex minH="100vh" flexDirection="column">
               <Header />
+              {/* <BackgroundAnimation /> */}
               <Component {...pageProps} />
             </Flex>
           </WalletProvider>

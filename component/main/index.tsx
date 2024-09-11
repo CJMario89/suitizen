@@ -13,7 +13,7 @@ const Main = () => {
       <Heading
         mt="40"
         as="h1"
-        letterSpacing="-1px"
+        letterSpacing="0.5px"
         textAlign="center"
         maxW="500px"
       >
@@ -23,13 +23,7 @@ const Main = () => {
         Empowering secure, decentralized identity. Experience trustless
         participation in governance and decision-making.
       </Heading>
-      <Button
-        mt="4"
-        as={Link}
-        href="/app"
-        size="lg"
-        boxShadow="0px 0px 5px #afd6ff"
-      >
+      <Button mt="4" as={Link} href="/app" size="lg">
         Launch app
       </Button>
     </Container>
