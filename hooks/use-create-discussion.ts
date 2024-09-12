@@ -1,4 +1,4 @@
-import { packNewProposalTxb } from "@/sui-api";
+import { packNewInteractionTxb } from "@/sui-api";
 import { useSignAndExecuteTransactionBlock } from "@mysten/dapp-kit";
 import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
@@ -32,7 +32,13 @@ const useCreateDiscussion = (options: UseCreateDiscussionProps) => {
       description: string;
     }) => {
       console.log("creating discussion", title, cardId, description);
-      const ptb = await packNewProposalTxb(cardId, 1, title, description, []);
+      const ptb = await packNewInteractionTxb(
+        cardId,
+        1,
+        title,
+        description,
+        []
+      );
       console.log("ptb", ptb);
       return await mutateAsync({
         transactionBlock: ptb,

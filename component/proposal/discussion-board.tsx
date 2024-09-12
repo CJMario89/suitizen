@@ -1,7 +1,7 @@
 import useGetDiscussion, { Discussion } from "@/hooks/use-get-discussion";
 import { Button, Flex, SimpleGrid, useDisclosure } from "@chakra-ui/react";
 import DiscussionCard from "./discussion-card";
-import DiscussionDrawer from "./discussion-drawer";
+import DiscussionModal from "./discussion-modal";
 import { useState } from "react";
 import CreateDiscussionModal from "./create-discussion-modal";
 
@@ -53,7 +53,7 @@ const DiscussionBoard = () => {
           View More
         </Button>
       )}
-      <DiscussionDrawer {...drawerDisclosure} discussion={drawerDiscussion} />
+      <DiscussionModal {...drawerDisclosure} discussion={drawerDiscussion} />
       <CreateDiscussionModal {...createDiscussionModalDisclosure} />
     </Flex>
   );

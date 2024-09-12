@@ -1,4 +1,4 @@
-import { getProposal } from "@/sui-api";
+import { getInteraction } from "@/sui-api";
 import {
   useInfiniteQuery,
   UseInfiniteQueryOptions,
@@ -52,7 +52,7 @@ const useGetDiscussion = (options?: useGetDiscussionProps) => {
     }: {
       pageParam: string | null;
     }): Promise<GetDiscussionResponse> => {
-      return (await getProposal(
+      return (await getInteraction(
         1,
         pageParam ?? null,
         6

@@ -86,6 +86,8 @@ const Registry = () => {
       console.log(data);
     },
     onError: (e) => {
+      window.location.reload();
+      alert("Create and post card error");
       console.log(e);
     },
   });

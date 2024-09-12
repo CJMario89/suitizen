@@ -1,4 +1,4 @@
-import { getProposal } from "@/sui-api";
+import { getInteraction } from "@/sui-api";
 import {
   useInfiniteQuery,
   UseInfiniteQueryOptions,
@@ -52,7 +52,11 @@ const useGetVoting = (options?: useGetVotingProps) => {
     }: {
       pageParam: string | null;
     }): Promise<GetVotingResponse> => {
-      return (await getProposal(0, pageParam ?? null, 6)) as GetVotingResponse;
+      return (await getInteraction(
+        0,
+        pageParam ?? null,
+        6
+      )) as GetVotingResponse;
     },
     initialPageParam: null,
     getNextPageParam: (data) => data.nextCursor,

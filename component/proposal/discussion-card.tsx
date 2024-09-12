@@ -38,7 +38,7 @@ const DiscussionCard = ({
           <Heading as="h5" noOfLines={2}>
             {discussion.topic}
           </Heading>
-          <UserCell objectId={discussion.proposer} />
+          <UserCell href="" objectId={discussion.proposer} />
           <Text noOfLines={5}>{discussion.description}</Text>
         </Flex>
         <Flex gap="1" flexDirection="column">

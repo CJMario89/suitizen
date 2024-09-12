@@ -58,6 +58,7 @@ const DiscussionModal = ({
       });
     }
   };
+  console.log(currentDiscussion);
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -69,7 +70,7 @@ const DiscussionModal = ({
         <ModalBody px="0" pt="0">
           <Flex flexDirection="column" gap="2" py="2">
             <Flex px="4" flexDirection="column" gap="2">
-              <UserCell objectId={currentDiscussion?.proposer} />
+              <UserCell href="" objectId={currentDiscussion?.proposer} />
               <Flex flexDirection="column" gap="2" minH="40">
                 <Text>{currentDiscussion?.description}</Text>
               </Flex>

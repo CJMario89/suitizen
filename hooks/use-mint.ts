@@ -2,17 +2,7 @@ import { packMintTxb } from "@/sui-api";
 import { useSignAndExecuteTransactionBlock } from "@mysten/dapp-kit";
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 
-type UseMintProps = UseMutationOptions<
-  void,
-  Error,
-  {
-    faceId: string;
-    pfpId: string;
-    cardId: string;
-    nameId: string;
-    index: number;
-  }
->;
+type UseMintProps = UseMutationOptions<any, Error, void>;
 
 const useMint = ({
   faceId,
@@ -20,6 +10,7 @@ const useMint = ({
   cardId,
   nameId,
   index,
+  ...options
 }: {
   faceId?: string;
   pfpId?: string;
@@ -35,7 +26,14 @@ const useMint = ({
       if (!nameId || !pfpId || !cardId || !faceId) {
         throw new Error("Missing required fields");
       }
-      const ptb = await packMintTxb(nameId, index, pfpId, cardId, faceId);
+      const ptb = await packMintTxb(
+        nameId,
+        index,
+        pfpId,
+        cardId,
+        faceId,
+        Date.now()
+      );
       return mutateAsync({
         transactionBlock: ptb,
         options: {
@@ -48,6 +46,7 @@ const useMint = ({
         },
       });
     },
+    ...options,
   });
 };
 

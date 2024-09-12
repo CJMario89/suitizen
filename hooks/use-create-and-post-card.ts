@@ -1,6 +1,7 @@
 import { getWalrus, postWalrus } from "@/walrus-api";
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 import i2 from "@/assets/i-2.jpg";
+import { createCard1 } from "@/create-card";
 
 type UseCreateAndPostCardPoOption = UseMutationOptions<
   {
@@ -35,16 +36,20 @@ const useCreateAndPostCard = (options?: UseCreateAndPostCardPoOption) => {
       pfpImage.src = `${process.env.NEXT_PUBLIC_WALRUS_AGGREGATOR}/${pfpObjectId}`;
 
       // create card
-      const buffer = await createCard({ image: pfpImage, name });
+      const [buffer, walrusFacialObject] = await Promise.all([
+        createCard1({ pfpId: "", name }),
+        postWalrus({ content: facialContent, type: "application/json" }),
+      ]);
+      // const buffer = await createCard({ image: pfpImage, name });
+      console.log(buffer);
       // post card and facial content
 
-      const [walrusCardObject, walrusFacialObject] = await Promise.all([
+      const [walrusCardObject] = await Promise.all([
         postWalrus({
           content: buffer,
-          type: "image/jpeg",
+          type: "image/jpg",
           query: "epochs=5",
         }),
-        postWalrus({ content: facialContent, type: "application/json" }),
       ]);
       console.log(pfpObjectId, walrusCardObject, walrusFacialObject);
       const pfpId = pfpObjectId;

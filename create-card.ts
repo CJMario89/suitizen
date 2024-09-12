@@ -1,9 +1,15 @@
-import { Box, Flex } from "@chakra-ui/react";
-import React, { useEffect } from "react";
-
-const Canvas = () => {
-  useEffect(() => {
-    const canvas = document.querySelector("canvas");
+export const createCard1 = ({
+  pfpId,
+  name,
+}: {
+  pfpId: string;
+  name: string;
+}) => {
+  return new Promise<Buffer>((resolve, reject) => {
+    // const canvas = document.createElement("canvas");
+    const canvas = document.querySelector("#canvas") as HTMLCanvasElement;
+    canvas.width = 400;
+    canvas.height = 600;
     const ctx = canvas?.getContext("2d");
     if (ctx) {
       ctx.fillStyle = "white";
@@ -54,43 +60,6 @@ const Canvas = () => {
         drawDroplet(x, y, size, angle);
       }
 
-      // // Draw a subtle border
-      // ctx.strokeStyle = "rgba(0, 0, 0, 0.3)";
-      // ctx.lineWidth = 15;
-
-      const image = new Image();
-      image.crossOrigin = "anonymous";
-      image.src = `${process.env.NEXT_PUBLIC_WALRUS_AGGREGATOR}/8hxbG1k235VOe51eovi8wub4JLS8XC_TjIauqBcFz-g`;
-      image.onload = () => {
-        // draw an image in an independent canvas
-        // output the blob to remove background API
-
-        const canvas1 = document.createElement("canvas");
-        canvas1.width = 300;
-        canvas1.height = 300;
-        const ctx1 = canvas1.getContext("2d");
-        if (!ctx1) return;
-        ctx1.drawImage(image, 0, 0, 300, 300);
-        canvas1.toBlob(async (blob) => {
-          if (!blob) return;
-          const imglyRemoveBackground = await import(
-            "@imgly/background-removal"
-          );
-          console.log(imglyRemoveBackground);
-          imglyRemoveBackground.removeBackground(blob).then((blob: Blob) => {
-            console.log(blob);
-            // result is a blob encoded as PNG.
-            // It can be converted to an URL to be used as HTMLImage.src
-            const url = URL.createObjectURL(blob);
-            const img = new Image();
-
-            img.src = url;
-            img.onload = () => {
-              ctx.drawImage(img, 50, 50, 300, 300);
-            };
-          });
-        });
-      };
       // Draw a linear gradient image border with pink blue color
       ctx.strokeStyle = "rgba(0, 0, 0, 0.3)";
       ctx.lineWidth = 5;
@@ -121,23 +90,52 @@ const Canvas = () => {
       ctx.fillText("Birth:", 100, 490);
       ctx.fillText("Citizen No.", 100, 520);
       ctx.fillText("Cetification for Suitizen", 120, 550);
-      ctx.fillText("CJMario", 220, 430);
+      ctx.fillText(name, 220, 430);
       ctx.fillText("Sui", 220, 460);
       ctx.fillText("Sep, 2024", 220, 490);
       ctx.fillText("123", 220, 520);
-    }
-  }, []);
-  return (
-    <Flex w="full" h="full" alignItems="center" justifyContent="center" p="36">
-      <Box w="400px" h="600px">
-        <canvas
-          width="400"
-          height="600"
-          style={{ border: "1px solid black" }}
-        />
-      </Box>
-    </Flex>
-  );
-};
 
-export default Canvas;
+      const image = new Image();
+      image.crossOrigin = "anonymous";
+      image.src = `${process.env.NEXT_PUBLIC_WALRUS_AGGREGATOR}/8hxbG1k235VOe51eovi8wub4JLS8XC_TjIauqBcFz-g`;
+      image.onload = () => {
+        // draw an image in an independent canvas
+        // output the blob to remove background API
+
+        const canvas1 = document.createElement("canvas");
+        canvas1.width = 300;
+        canvas1.height = 300;
+        const ctx1 = canvas1.getContext("2d");
+        if (!ctx1) return;
+        ctx1.drawImage(image, 0, 0, 300, 300);
+        canvas1.toBlob(async (blob) => {
+          if (!blob) return;
+          const imglyRemoveBackground = await import(
+            "@imgly/background-removal"
+          );
+          console.log(imglyRemoveBackground);
+          imglyRemoveBackground.removeBackground(blob).then((blob: Blob) => {
+            console.log(blob);
+            // result is a blob encoded as PNG.
+            // It can be converted to an URL to be used as HTMLImage.src
+            const url = URL.createObjectURL(blob);
+            const img = new Image();
+
+            img.src = url;
+            img.onload = () => {
+              ctx.drawImage(img, 50, 50, 300, 300);
+              canvas.toBlob(async (blob) => {
+                if (blob) {
+                  console.log(blob);
+                  resolve(Buffer.from(await blob.arrayBuffer()));
+                } else {
+                  reject("Failed to convert canvas to blob");
+                }
+              });
+            };
+          });
+        });
+      };
+    }
+  });
+};

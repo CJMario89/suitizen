@@ -35,6 +35,7 @@ const Mint = ({
     nameId,
     index,
     onSuccess: () => {
+      console.log("minted");
       onSuccess();
     },
   });
@@ -64,7 +65,6 @@ const Mint = ({
         </Flex>
       ) : (
         <Flex w="full" h="full" alignItems="center" flexDirection="column">
-          <Heading>Mint your Suitizen</Heading>
           <Button
             mt="40"
             isLoading={isPending}

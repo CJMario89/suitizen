@@ -1,4 +1,4 @@
-import { packNewProposalTxb } from "@/sui-api";
+import { packNewInteractionTxb } from "@/sui-api";
 import { useSignAndExecuteTransactionBlock } from "@mysten/dapp-kit";
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 
@@ -30,7 +30,7 @@ const useCreateVoting = (options: UseCreateVotingProps) => {
       options: string[];
     }) => {
       console.log("creating voting", title, cardId, description);
-      const ptb = await packNewProposalTxb(
+      const ptb = await packNewInteractionTxb(
         cardId,
         0,
         title,

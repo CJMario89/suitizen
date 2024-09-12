@@ -19,8 +19,8 @@ const Profile = () => {
       <Image
         src={card?.cardImg ?? ""}
         alt={card?.lastName ?? ""}
-        width={512}
-        height={512}
+        width={400}
+        height={600}
       />
       <Button as="a" href="/community">
         Go to Community

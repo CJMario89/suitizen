@@ -1,10 +1,18 @@
-import { Flex, Heading } from "@chakra-ui/react";
-import React from "react";
+import { Button, Flex, Heading } from "@chakra-ui/react";
+import React, { useEffect } from "react";
 import { getAnimationStyle } from "./animation-style";
 import useGetCard from "@/hooks/use-get-card";
+import Image from "next/image";
 
 const Complete = ({ step }: { step: number }) => {
-  const { data } = useGetCard();
+  const { data, refetch } = useGetCard();
+  const card = data?.[0];
+  useEffect(() => {
+    if (step === 3) {
+      refetch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
   return (
     <Flex
       position="absolute"
@@ -18,8 +26,23 @@ const Complete = ({ step }: { step: number }) => {
       {...getAnimationStyle(3, step)}
     >
       <Heading size="md" color="white">
-        Your Card is Ready!
+        Congratulations! You are now a Suitizen.
       </Heading>
+      <Image
+        src={card?.cardImg ?? ""}
+        alt="Suitizen Card"
+        width={300}
+        height={450}
+      />
+      <Button
+        size="md"
+        boxShadow="0px 0px 5px #afd6ff"
+        onClick={() => {
+          window.location.reload();
+        }}
+      >
+        Go to App
+      </Button>
     </Flex>
   );
 };
