@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { FormEvent, useRef, useState } from "react";
 import ErrorText from "../common/error-text";
+import { refreshInteractionData } from "@/sui-api";
 
 const topicErrorText = "Topic is required";
 const descriptionErrorText = "Description is required";
@@ -35,6 +36,7 @@ const CreateDiscussionModal = ({
   const { mutate: createDiscussion, isPending } = useCreateDiscussion({
     onSuccess: async () => {
       console.log("onSuccess");
+      await refreshInteractionData();
       refetch();
       onClose();
     },

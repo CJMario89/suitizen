@@ -1,4 +1,4 @@
-import { packDiscussTxb } from "@/sui-api";
+import { packDiscussTxb, refreshInteractionData } from "@/sui-api";
 import { useSignAndExecuteTransactionBlock } from "@mysten/dapp-kit";
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 
@@ -29,7 +29,7 @@ const usePostComment = (options?: UsePostCommentProps) => {
       }
       console.log("posting comment", proposalId, cardId, content);
       const ptb = await packDiscussTxb(proposalId, cardId, content);
-      return mutateAsync({
+      await mutateAsync({
         transactionBlock: ptb,
         options: {
           showBalanceChanges: true,
@@ -40,6 +40,8 @@ const usePostComment = (options?: UsePostCommentProps) => {
           showRawInput: true,
         },
       });
+      await refreshInteractionData();
+      return;
     },
     ...options,
   });

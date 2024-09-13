@@ -16,19 +16,19 @@ export type Discussion = {
   topic: string;
   description: string;
   flowNum: string;
-  proposer: string;
+  host: string;
   objectId: string;
   comments: Comment[];
 };
 
 export type GetDiscussionResponse = {
-  hasNextPage: boolean;
-  nextCursor: string | null;
   data: Discussion[];
+  page: number;
+  hasNextPage: boolean;
 };
 
 type GetDiscussionPageResponse = {
-  pageParam: string | null;
+  pageParam: number;
   pages: GetDiscussionResponse[];
 };
 
@@ -39,10 +39,12 @@ type useGetDiscussionProps = Omit<
     GetDiscussionPageResponse,
     GetDiscussionResponse,
     string[],
-    string | null
+    number
   >,
   "queryKey"
 >;
+
+const limit = 6;
 
 const useGetDiscussion = (options?: useGetDiscussionProps) => {
   return useInfiniteQuery({
@@ -50,16 +52,17 @@ const useGetDiscussion = (options?: useGetDiscussionProps) => {
     queryFn: async ({
       pageParam,
     }: {
-      pageParam: string | null;
+      pageParam: number;
     }): Promise<GetDiscussionResponse> => {
-      return (await getInteraction(
-        1,
-        pageParam ?? null,
-        6
-      )) as GetDiscussionResponse;
+      const data = await getInteraction(1, pageParam, limit);
+      return {
+        page: pageParam,
+        hasNextPage: data.totalCount > pageParam * limit,
+        data: data.data,
+      } as GetDiscussionResponse;
     },
-    initialPageParam: null,
-    getNextPageParam: (data) => data.nextCursor,
+    initialPageParam: 1,
+    getNextPageParam: ({ page }) => page + 1,
     ...options,
   });
 };

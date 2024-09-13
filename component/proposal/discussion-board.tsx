@@ -12,7 +12,9 @@ const DiscussionBoard = () => {
   discussions?.sort((a, b) => {
     return Number(b.flowNum) - Number(a.flowNum);
   });
-  const hasNextPage = data?.pages?.[data.pages.length - 1]?.hasNextPage;
+  const currentPage = data?.pages?.[data.pages.length - 1];
+  console.log(currentPage);
+  const hasNextPage = currentPage?.hasNextPage;
   const drawerDisclosure = useDisclosure();
   const createDiscussionModalDisclosure = useDisclosure();
   const [drawerDiscussion, setDrawerDiscussion] = useState<Discussion>();

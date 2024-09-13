@@ -13,8 +13,9 @@ const DiscussionCard = ({
   onOpenDrawer: ({ discussion }: { discussion: Discussion }) => void;
 }) => {
   const { data: card } = useGetCard();
-  const hasComments = discussion.comments.length > 0;
-
+  console.log(discussion);
+  const hasComments = discussion?.comments?.length > 0;
+  console.log(discussion);
   return (
     <Flex
       flexDirection="column"
@@ -38,7 +39,7 @@ const DiscussionCard = ({
           <Heading as="h5" noOfLines={2}>
             {discussion.topic}
           </Heading>
-          <UserCell href="" objectId={discussion.proposer} />
+          <UserCell href="" objectId={discussion.host} />
           <Text noOfLines={5}>{discussion.description}</Text>
         </Flex>
         <Flex gap="1" flexDirection="column">

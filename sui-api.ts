@@ -4,7 +4,20 @@ import {
 } from "@mysten/sui.js/transactions";
 import { SuiClient } from "@mysten/sui.js/client";
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, get, set, child, remove } from "firebase/database";
+// import { getDatabase, ref, get, set, query, orderByChild, limitToFirst } from "firebase/database";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  collection,
+  query,
+  orderBy,
+  limit,
+  startAfter,
+  getDocs,
+  deleteDoc,
+} from "firebase/firestore";
 
 const PACKAGE_ID: string = `${process.env.NEXT_PUBLIC_PACKAGE_ID}`;
 const GLOBAL_CONFIG_ID: string = `${process.env.NEXT_PUBLIC_GLOBAL_CONFIG_ID}`;
@@ -43,9 +56,9 @@ const FIREBASE_ENV: string = `${process.env.NEXT_PUBLIC_FIREBASE_ENV}`;
 const FIREBASE_CONFIG: string = `${process.env.NEXT_PUBLIC_FIREBASE_CONFIG}`;
 
 const FIREBASE_APP = initializeApp(JSON.parse(FIREBASE_CONFIG));
-const FIREBASE_DB = getDatabase(FIREBASE_APP);
-const DB_REF = ref(FIREBASE_DB);
-const DB_ROOT_PATH = `/demo/${FIREBASE_ENV}`;
+// const FIREBASE_DB = getDatabase(FIREBASE_APP);
+const FIREBASE_DB = getFirestore(FIREBASE_APP);
+const DB_ROOT_PATH = `${PACKAGE_ID}/`;
 
 export async function packMintTxb(
   suiNs: string,
@@ -310,126 +323,119 @@ export async function checkIndexExist(index: number) {
 
 export async function getInteraction(
   category: number,
-  cursor: string | null,
-  limit: number | null
+  pageNumber: number | null,
+  pageSize: number | null
 ) {
-  let interaction: any = {};
-  let interactionList: any[] = [];
+  let vo: any = {};
+
+  let categoryStr = category == 0 ? VOTE_FUN : DISCUSS_FUN;
+
+  try {
+    // 取得父文檔的參考
+    const parentDocRef = doc(FIREBASE_DB, DB_ROOT_PATH, categoryStr);
+
+    // 獲取文檔內容
+    const docSnap = await getDoc(parentDocRef);
+
+    if (docSnap.exists()) {
+      vo.totalCount = docSnap.get("totalCount");
+    } else {
+      vo.totalCount = 0;
+    }
+
+    // 取得子集合的參考
+    const subcollectionRef = collection(parentDocRef, "data");
+
+    // 創建查詢
+    let queryDoc = query(subcollectionRef);
+
+    if (pageNumber != null && pageSize != null) {
+      // 創建查詢，按照 lastUpdate 欄位降序排序
+      queryDoc = query(
+        subcollectionRef,
+        orderBy("lastUpdate", "desc"),
+        limit(pageSize)
+      );
+
+      // 如果需要查詢第二頁或之後的頁數
+      if (pageNumber > 1) {
+        // 查詢前一頁的文檔以獲取最後一個文檔的快照
+        const previousPageQuery = query(
+          subcollectionRef,
+          orderBy("lastUpdate", "desc"),
+          limit((pageNumber - 1) * pageSize)
+        );
+        const previousPageSnapshot = await getDocs(previousPageQuery);
+
+        if (!previousPageSnapshot.empty) {
+          // 使用前一頁的最後一個文檔作為查詢的起點
+          const lastVisibleDoc =
+            previousPageSnapshot.docs[previousPageSnapshot.docs.length - 1];
+          queryDoc = query(
+            subcollectionRef,
+            orderBy("lastUpdate", "desc"),
+            startAfter(lastVisibleDoc),
+            limit(pageSize)
+          );
+        } else {
+          // 如果沒有找到前一頁的數據，則返回空結果
+          return { documents: [], lastDoc: null };
+        }
+      }
+    }
+
+    // 執行查詢
+    const querySnapshot = await getDocs(queryDoc);
+
+    // 處理查詢結果
+    let documents: any = [];
+    querySnapshot.forEach((doc) => {
+      documents.push(doc.data());
+    });
+
+    vo.data = documents;
+
+    return vo;
+  } catch (e) {
+    console.error("獲取文檔時出錯: ", e);
+    return {};
+  }
+}
+
+export async function getCardIdByName(name: string) {
+  let realName = name + "sui";
+  const decoder = new TextDecoder("utf-8");
   let objectResponse: any = await suiClient.getObject({
-    id: INTERACTION_RECORD_ID,
+    id: REGISTRY_ID,
     options: {
       showContent: true,
     },
   });
   if (objectResponse.data) {
     console.log(objectResponse);
-    let tableId = "";
-    let isVote = false;
-    if (category == 0) {
-      // vote
-      console.log("vote");
-      isVote = true;
-      tableId = objectResponse.data.content.fields.vote_tab.fields.id.id;
-    } else if (category == 1) {
-      // discuss
-      console.log("discuss");
-      tableId = objectResponse.data.content.fields.discuss_tab.fields.id.id;
-    }
-    console.log(tableId);
-    let tableVo = await getTableData(tableId, cursor, limit);
-    console.log(tableVo);
-
-    for (let [key, value] of tableVo.tableMap) {
-      let dataResponse: any = await suiClient.getObject({
-        id: value,
-        options: {
-          showContent: true,
-        },
-      });
-
-      if (dataResponse.data) {
-        console.log(dataResponse.data);
-        let dataVo: any = {};
-        dataVo.category = dataResponse.data.content.fields.category;
-        dataVo.categoryStr = dataResponse.data.content.fields.category_str;
-        dataVo.topic = dataResponse.data.content.fields.topic;
-        dataVo.description = dataResponse.data.content.fields.description;
-        dataVo.flowNum = dataResponse.data.content.fields.flow_num;
-        dataVo.proposer = dataResponse.data.content.fields.host;
-        dataVo.objectId = dataResponse.data.objectId;
-        dataVo.lastUpdate = dataResponse.data.content.fields.last_update;
-
-        if (isVote) {
-          let dynamicData = await suiClient.getDynamicFieldObject({
-            parentId: dataVo.objectId,
-            name: {
-              type: `${PACKAGE_ID}::interaction::VoteSituation`,
-              value: {
-                dummy_field: false,
-              },
-            },
-          });
-          if (dynamicData.data) {
-            console.log(dynamicData.data);
-            let options: any[] = [];
-            let dataContent: any = dynamicData.data.content;
-            for (
-              let i = 0;
-              i < dataContent.fields.value.fields.options.length;
-              i++
-            ) {
-              let optionVo: any = dataContent.fields.value.fields.options[i];
-              console.log(optionVo);
-              options.push({
-                index: i,
-                amount: optionVo.fields.amount,
-                content: optionVo.fields.content,
-              });
-            }
-            dataVo.options = options;
-          }
-        } else {
-          let dynamicData = await suiClient.getDynamicFieldObject({
-            parentId: dataVo.objectId,
-            name: {
-              type: `${PACKAGE_ID}::interaction::DiscussionThread`,
-              value: {
-                dummy_field: false,
-              },
-            },
-          });
-          if (dynamicData.data) {
-            console.log(dynamicData.data);
-            let comments: any[] = [];
-            let dataContent: any = dynamicData.data.content;
-            for (let i = 0; i < dataContent.fields.value.length; i++) {
-              let commentVo: any = dataContent.fields.value[i];
-              console.log(commentVo);
-              comments.push({
-                name: commentVo.fields.name,
-                content: commentVo.fields.content,
-                sender: commentVo.fields.sender,
-              });
-            }
-            dataVo.comments = comments;
-          }
+    let tableId: string =
+      objectResponse.data.content.fields.reg_tab.fields.id.id;
+    let tableVo: any = await getTableData(tableId, null, null);
+    if (tableVo.tableMap.size > 0) {
+      for (let [key, value] of tableVo.tableMap) {
+        const byteArray = new Uint8Array(key);
+        let deocdeKey = decoder.decode(byteArray);
+        if (deocdeKey == realName) {
+          return value;
         }
-
-        interactionList.push(dataVo);
       }
     }
-
-    interaction.hasNextPage = tableVo.hasNextPage;
-    interaction.nextCursor = tableVo.nextCursor;
-    interaction.data = interactionList;
   }
-  return interaction;
+  return null;
 }
 
-export async function packAddGuardianTxb(
-  cardId: string,
-  guardianCardId: string
-) {
+export async function packAddGuardianTxb(cardId: string, guardianName: string) {
+  let guardianCardId = await getCardIdByName(guardianName);
+
+  if (guardianCardId == null) {
+    throw new Error(guardianName + " Not Found");
+  }
+
   let txb: TransactionBlock = new TransactionBlock();
 
   let args: TransactionArgument[] = [
@@ -450,8 +456,14 @@ export async function packAddGuardianTxb(
 
 export async function packRemoveGuardianTxb(
   cardId: string,
-  guardianCardId: string
+  guardianName: string
 ) {
+  let guardianCardId = await getCardIdByName(guardianName);
+
+  if (guardianCardId == null) {
+    throw new Error(guardianName + " Not Found");
+  }
+
   let txb: TransactionBlock = new TransactionBlock();
 
   let args: TransactionArgument[] = [
@@ -493,7 +505,7 @@ export async function packNewTransferRequestTxb(
   return txb;
 }
 
-export async function getTransferRequestList(cardId: string) {
+export async function getTransferRequestList(cardId: string, type: number) {
   let transferRequestList = [];
   let objectResponse: any = await suiClient.getObject({
     id: TRANSFER_REQUEST_RECORD_ID,
@@ -503,11 +515,20 @@ export async function getTransferRequestList(cardId: string) {
   });
   if (objectResponse.data) {
     console.log(objectResponse);
-    let tableId: string =
-      objectResponse.data.content.fields.request_ids.fields.id.id;
+    let tableId: string = "";
+    if (type == 0) {
+      // 查自己發起的請求
+      tableId =
+        objectResponse.data.content.fields.requester_to_requests.fields.id.id;
+    } else {
+      // 查別人發起，自己是監護人的請求
+      tableId =
+        objectResponse.data.content.fields.guardian_to_requests.fields.id.id;
+    }
     let tableVo: any = await getTableData(tableId, null, null);
     if (tableVo.tableMap.size > 0) {
       if (tableVo.tableMap.has(cardId)) {
+        // 是發起者
         for (let requestId of tableVo.tableMap.get(cardId)) {
           let transferShardObjectResp: any = await suiClient.getObject({
             id: requestId,
@@ -619,6 +640,185 @@ export async function packTransferCardTxb(cardId: string, requestId: string) {
   return txb;
 }
 
+// 刷新 Interaction 緩存資料
+export async function refreshInteractionData() {
+  let objectResponse: any = await suiClient.getObject({
+    id: INTERACTION_RECORD_ID,
+    options: {
+      showContent: true,
+    },
+  });
+  if (objectResponse.data) {
+    console.log(objectResponse);
+
+    let voteTableId = objectResponse.data.content.fields.vote_tab.fields.id.id;
+    let discussTableId =
+      objectResponse.data.content.fields.discuss_tab.fields.id.id;
+
+    let voteTableVo = await getTableData(voteTableId, null, null);
+    let discussTableVo = await getTableData(discussTableId, null, null);
+
+    const voteDocRef = doc(FIREBASE_DB, DB_ROOT_PATH, VOTE_FUN);
+    const discussDocRef = doc(FIREBASE_DB, DB_ROOT_PATH, DISCUSS_FUN);
+
+    // 取得子集合 data 的參考
+    const voteDataRef = collection(voteDocRef, "data");
+    const discussDataRef = collection(discussDocRef, "data");
+
+    // 獲取 vote 子集合中 data 所有文檔
+    const voteQuerySnapshot = await getDocs(voteDataRef);
+    const voteDocumentIds = voteQuerySnapshot.docs.map((doc) => doc.id);
+
+    // 獲取 discuss 子集合中 data 所有文檔
+    const discussQuerySnapshot = await getDocs(discussDataRef);
+    const discussDocumentIds = discussQuerySnapshot.docs.map((doc) => doc.id);
+
+    let voteList: any[] = [];
+    let discussList: any[] = [];
+
+    for (let [key, value] of voteTableVo.tableMap) {
+      let dataResponse: any = await suiClient.getObject({
+        id: value,
+        options: {
+          showContent: true,
+        },
+      });
+
+      if (dataResponse.data) {
+        console.log(dataResponse.data);
+        let dataVo: any = {};
+        dataVo.category = dataResponse.data.content.fields.category;
+        dataVo.categoryStr = dataResponse.data.content.fields.category_str;
+        dataVo.topic = dataResponse.data.content.fields.topic;
+        dataVo.description = dataResponse.data.content.fields.description;
+        dataVo.flowNum = dataResponse.data.content.fields.flow_num;
+        dataVo.host = dataResponse.data.content.fields.host;
+        dataVo.objectId = dataResponse.data.objectId;
+        dataVo.lastUpdate = Number(
+          dataResponse.data.content.fields.last_update
+        );
+
+        let dynamicData = await suiClient.getDynamicFieldObject({
+          parentId: dataVo.objectId,
+          name: {
+            type: `${PACKAGE_ID}::interaction::VoteSituation`,
+            value: {
+              dummy_field: false,
+            },
+          },
+        });
+        if (dynamicData.data) {
+          console.log(dynamicData.data);
+          let options: any[] = [];
+          let dataContent: any = dynamicData.data.content;
+          for (
+            let i = 0;
+            i < dataContent.fields.value.fields.options.length;
+            i++
+          ) {
+            let optionVo: any = dataContent.fields.value.fields.options[i];
+            console.log(optionVo);
+            options.push({
+              index: i,
+              amount: optionVo.fields.amount,
+              content: optionVo.fields.content,
+            });
+          }
+          dataVo.options = options;
+        }
+
+        const docRef = doc(voteDataRef, dataVo.objectId); // 使用 objectId 唯一 ID
+        // 設置文檔資料
+        await setDoc(docRef, dataVo);
+
+        voteList.push(dataVo.objectId);
+      }
+    }
+
+    for (let [key, value] of discussTableVo.tableMap) {
+      let dataResponse: any = await suiClient.getObject({
+        id: value,
+        options: {
+          showContent: true,
+        },
+      });
+
+      if (dataResponse.data) {
+        console.log(dataResponse.data);
+        let dataVo: any = {};
+        dataVo.category = dataResponse.data.content.fields.category;
+        dataVo.categoryStr = dataResponse.data.content.fields.category_str;
+        dataVo.topic = dataResponse.data.content.fields.topic;
+        dataVo.description = dataResponse.data.content.fields.description;
+        dataVo.flowNum = dataResponse.data.content.fields.flow_num;
+        dataVo.host = dataResponse.data.content.fields.host;
+        dataVo.objectId = dataResponse.data.objectId;
+        dataVo.lastUpdate = Number(
+          dataResponse.data.content.fields.last_update
+        );
+
+        let dynamicData = await suiClient.getDynamicFieldObject({
+          parentId: dataVo.objectId,
+          name: {
+            type: `${PACKAGE_ID}::interaction::DiscussionThread`,
+            value: {
+              dummy_field: false,
+            },
+          },
+        });
+        if (dynamicData.data) {
+          console.log(dynamicData.data);
+          let comments: any[] = [];
+          let dataContent: any = dynamicData.data.content;
+          for (let i = 0; i < dataContent.fields.value.length; i++) {
+            let commentVo: any = dataContent.fields.value[i];
+            console.log(commentVo);
+            comments.push({
+              name: commentVo.fields.name,
+              content: commentVo.fields.content,
+              sender: commentVo.fields.sender,
+            });
+          }
+          dataVo.comments = comments;
+        }
+
+        const docRef = doc(discussDataRef, dataVo.objectId); // 使用 objectId 唯一 ID
+        // 設置文檔資料
+        await setDoc(docRef, dataVo);
+
+        discussList.push(dataVo.objectId);
+      }
+    }
+
+    await setDoc(voteDocRef, {
+      totalCount: voteList.length,
+    });
+
+    await setDoc(discussDocRef, {
+      totalCount: discussList.length,
+    });
+
+    // 清掉 vote 已不存在的文檔
+    for (let objectId of voteDocumentIds) {
+      if (!voteList.includes(objectId)) {
+        let objectDoc = doc(voteDocRef, "data", objectId);
+        // 刪除指定文檔
+        await deleteDoc(objectDoc);
+      }
+    }
+
+    // 清掉 discuss 已不存在的文檔
+    for (let objectId of discussDocumentIds) {
+      console.log(objectId);
+      console.log(discussList.includes(objectId));
+      if (!discussList.includes(objectId)) {
+        let objectDoc = doc(discussDocRef, "data", objectId);
+        // 刪除指定文檔
+        await deleteDoc(objectDoc);
+      }
+    }
+  }
+}
 export async function getCardDetail(objectId: string) {
   let cardDetail: any = {};
   let objectResponse: any = await suiClient.getObject({

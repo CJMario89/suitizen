@@ -19,6 +19,7 @@ import {
 import { useRef, useState } from "react";
 import IconClose from "../common/icon/close";
 import ErrorText from "../common/error-text";
+import { refreshInteractionData } from "@/sui-api";
 
 const CreateVotingModal = ({
   isOpen,
@@ -33,6 +34,7 @@ const CreateVotingModal = ({
   const { refetch } = useGetVoting();
   const { mutate: createVoting, isPending } = useCreateVoting({
     onSuccess: async () => {
+      await refreshInteractionData();
       refetch();
       onClose();
     },

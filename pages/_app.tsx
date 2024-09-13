@@ -16,7 +16,10 @@ import "@mysten/dapp-kit/dist/index.css";
 import React from "react";
 import BackgroundAnimation from "@/component/common/background-animation";
 React.useLayoutEffect = React.useEffect;
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({
+  Component,
+  pageProps,
+}: AppProps & { Component: { noWallet: boolean } }) {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -36,8 +39,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
           <WalletProvider autoConnect>
             <Flex minH="100vh" flexDirection="column">
-              <Header />
-              {/* <BackgroundAnimation /> */}
+              {Component.noWallet ? <Header noWallet /> : <Header />}
               <Component {...pageProps} />
             </Flex>
           </WalletProvider>

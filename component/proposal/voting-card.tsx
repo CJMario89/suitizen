@@ -11,6 +11,7 @@ import useGetVoting, { Option, Voting } from "@/hooks/use-get-voting";
 import useVote from "@/hooks/use-vote";
 import useGetCard from "@/hooks/use-get-card";
 import { useEffect, useState } from "react";
+import { refreshInteractionData } from "@/sui-api";
 
 const VotingOption = ({
   proposalId,
@@ -23,7 +24,8 @@ const VotingOption = ({
   const { refetch, isRefetching } = useGetVoting();
   const [isTargetRefetching, setIsTargetRefetching] = useState(false);
   const { mutate: vote, isPending } = useVote({
-    onSuccess: () => {
+    onSuccess: async () => {
+      await refreshInteractionData();
       refetch();
     },
     onError: (e) => {
@@ -86,7 +88,7 @@ const VotingCard = ({ voting }: { voting: Voting }) => {
           <Heading as="h5" h="8" overflowY="auto">
             {voting.topic}
           </Heading>
-          <UserCell objectId={voting.proposer} />
+          <UserCell href="" objectId={voting.host} />
           <Text h="40" overflowY="auto">
             {voting.description}
           </Text>

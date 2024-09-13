@@ -1,7 +1,7 @@
 import Main from "@/component/main";
 import Head from "next/head";
 
-export default function Home() {
+function Home() {
   return (
     <>
       <Head>
@@ -14,3 +14,6 @@ export default function Home() {
     </>
   );
 }
+Home.noWallet = true;
+
+export default Home;

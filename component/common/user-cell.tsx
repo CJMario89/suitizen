@@ -21,11 +21,10 @@ const UserCell = ({
   textProps?: TextProps;
 } & FlexProps &
   LinkProps) => {
-  console.log(objectId);
   const { data: card } = useGetCardDetail({
     objectId,
   });
-
+  console.log(card);
   return (
     <Flex gap="2" alignItems="center" {...restProps}>
       <Box

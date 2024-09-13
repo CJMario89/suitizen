@@ -5,7 +5,7 @@ import useGetCard from "@/hooks/use-get-card";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import UserCell from "./common/user-cell";
 
-const Header = () => {
+const Header = ({ noWallet }: { noWallet?: boolean }) => {
   const { data } = useGetCard();
   const card = data?.[0];
   const isSuitizen = !!card;
@@ -19,23 +19,25 @@ const Header = () => {
           />
         </Icon>
       </Link>
-      <Flex gap="4">
-        {isSuitizen && (
-          <UserCell
-            objectId={card?.objectId}
-            imageContainerProps={{
-              w: "8",
-              h: "8",
-            }}
-            textProps={{
-              fontSize: "md",
-            }}
-            as={Link}
-            href="/app"
-          />
-        )}
-        <ConnectButton />
-      </Flex>
+      {!noWallet && (
+        <Flex gap="4">
+          {isSuitizen && (
+            <UserCell
+              objectId={card?.objectId}
+              imageContainerProps={{
+                w: "8",
+                h: "8",
+              }}
+              textProps={{
+                fontSize: "md",
+              }}
+              as={Link}
+              href="/app"
+            />
+          )}
+          <ConnectButton />
+        </Flex>
+      )}
     </Flex>
   );
 };

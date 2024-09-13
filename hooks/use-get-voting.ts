@@ -16,19 +16,19 @@ export type Voting = {
   topic: string;
   description: string;
   flowNum: string;
-  proposer: string;
+  host: string;
   objectId: string;
   options: Option[];
 };
 
 export type GetVotingResponse = {
-  hasNextPage: boolean;
-  nextCursor: string | null;
+  page: number;
   data: Voting[];
+  hasNextPage: boolean;
 };
 
 type GetVotingPageResponse = {
-  pageParam: string | null;
+  pageParam: number;
   pages: GetVotingResponse[];
 };
 
@@ -39,10 +39,12 @@ type useGetVotingProps = Omit<
     GetVotingPageResponse,
     GetVotingResponse,
     string[],
-    string | null
+    number
   >,
   "queryKey"
 >;
+
+const limit = 6;
 
 const useGetVoting = (options?: useGetVotingProps) => {
   return useInfiniteQuery({
@@ -50,16 +52,17 @@ const useGetVoting = (options?: useGetVotingProps) => {
     queryFn: async ({
       pageParam,
     }: {
-      pageParam: string | null;
+      pageParam: number;
     }): Promise<GetVotingResponse> => {
-      return (await getInteraction(
-        0,
-        pageParam ?? null,
-        6
-      )) as GetVotingResponse;
+      const data = await getInteraction(0, pageParam, limit);
+      return {
+        page: pageParam,
+        hasNextPage: data.totalCount > pageParam * limit,
+        data: data.data,
+      } as GetVotingResponse;
     },
-    initialPageParam: null,
-    getNextPageParam: (data) => data.nextCursor,
+    initialPageParam: 1,
+    getNextPageParam: ({ page }) => page + 1,
     ...options,
   });
 };
