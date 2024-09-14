@@ -1,12 +1,18 @@
 import { Box, Button, Flex, Heading, Skeleton } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { getAnimationStyle } from "./animation-style";
 import useGetCard, { Card } from "@/hooks/use-get-card";
 import Image from "next/image";
 import { getUserSuitizenCard, refreshInteractionData } from "@/sui-api";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 
-const Complete = ({ step }: { step: number }) => {
+const Complete = ({
+  step,
+  setPath,
+}: {
+  step: number;
+  setPath: Dispatch<SetStateAction<string>>;
+}) => {
   const [card, setCard] = useState<Card>();
   const currentAccount = useCurrentAccount();
 
@@ -65,7 +71,7 @@ const Complete = ({ step }: { step: number }) => {
         size="md"
         boxShadow="0px 0px 5px #afd6ff"
         onClick={() => {
-          window.location.reload();
+          setPath("/app");
         }}
         alignSelf="self-end"
       >

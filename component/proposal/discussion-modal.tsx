@@ -71,7 +71,7 @@ const DiscussionModal = ({
         <ModalBody px="0" pt="0">
           <Flex flexDirection="column" gap="2" py="2">
             <Flex px="4" flexDirection="column" gap="2">
-              <UserCell href="" objectId={currentDiscussion?.host} />
+              <UserCell objectId={currentDiscussion?.host} />
               <Flex flexDirection="column" gap="2" minH="40">
                 <Text>{currentDiscussion?.description}</Text>
               </Flex>

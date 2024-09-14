@@ -2,8 +2,13 @@ import useGetCard from "@/hooks/use-get-card";
 import useTransferBackup from "@/hooks/use-transfer-backup";
 import { Button, Container, Flex, Heading, Text } from "@chakra-ui/react";
 import Image from "next/image";
+import { Dispatch, SetStateAction } from "react";
 
-const Profile = () => {
+const Profile = ({
+  setPath,
+}: {
+  setPath: Dispatch<SetStateAction<string>>;
+}) => {
   const { data, refetch } = useGetCard();
   const card = data?.[0];
   const { mutate: transfer, isPending } = useTransferBackup({
@@ -29,7 +34,11 @@ const Profile = () => {
         width={400}
         height={600}
       />
-      <Button as="a" href="/community">
+      <Button
+        onClick={() => {
+          setPath("/community");
+        }}
+      >
         Go to Community
       </Button>
       <Flex flexDirection="column" gap="4">

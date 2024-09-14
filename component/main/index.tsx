@@ -1,7 +1,8 @@
 import { Box, Button, Container, Flex, Heading } from "@chakra-ui/react";
 import Link from "next/link";
+import { Dispatch, SetStateAction } from "react";
 
-const Main = () => {
+const Main = ({ setPath }: { setPath: Dispatch<SetStateAction<string>> }) => {
   return (
     <Container
       maxW="container.2xl"
@@ -47,8 +48,7 @@ const Main = () => {
       </Heading>
       <Button
         mt="4"
-        as={Link}
-        href="/app"
+        onClick={() => setPath("/app")}
         size="lg"
         boxShadow={"0px 0px 10px rgba(0, 0, 0, 1)"}
       >

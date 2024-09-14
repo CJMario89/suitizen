@@ -13,7 +13,7 @@ import {
 } from "@mysten/dapp-kit";
 import { getFullnodeUrl } from "@mysten/sui/client";
 import "@mysten/dapp-kit/dist/index.css";
-import React from "react";
+import React, { useState } from "react";
 import BackgroundAnimation from "@/component/common/background-animation";
 React.useLayoutEffect = React.useEffect;
 export default function App({
@@ -33,14 +33,16 @@ export default function App({
     mainnet: { url: getFullnodeUrl("mainnet") },
     testnet: { url: getFullnodeUrl("testnet") },
   });
+  const [path, setPath] = useState("/");
+
   return (
     <ChakraProvider theme={getTheme()}>
       <QueryClientProvider client={queryClient}>
         <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
           <WalletProvider autoConnect>
             <Flex minH="100vh" flexDirection="column">
-              {Component.noWallet ? <Header noWallet /> : <Header />}
-              <Component {...pageProps} />
+              <Header path={path} setPath={setPath} />
+              <Component {...pageProps} setPath={setPath} path={path} />
             </Flex>
           </WalletProvider>
         </SuiClientProvider>

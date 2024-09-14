@@ -17,7 +17,7 @@ import {
   useSteps,
 } from "@chakra-ui/react";
 import NameServiceBlock from "./name-service-block";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { getAnimationStyle } from "./animation-style";
 import FaceDetectionBlock from "./face-detection-block";
 import useCreateAndPostCard from "@/hooks/use-create-and-post-card";
@@ -74,7 +74,11 @@ const StepperBlock = ({ step }: { step: number }) => {
   );
 };
 
-const Registry = () => {
+const Registry = ({
+  setPath,
+}: {
+  setPath: Dispatch<SetStateAction<string>>;
+}) => {
   const [step, setStep] = useState(-1);
   const [selectedNameService, setSelectedNameService] = useState<NameService>();
   const {
@@ -190,7 +194,7 @@ const Registry = () => {
                 setStep(3);
               }}
             />
-            <Complete step={step} />
+            <Complete step={step} setPath={setPath} />
           </Flex>
         </Flex>
       </Flex>

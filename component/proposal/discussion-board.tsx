@@ -1,12 +1,19 @@
 import useGetDiscussion, { Discussion } from "@/hooks/use-get-discussion";
-import { Button, Flex, SimpleGrid, useDisclosure } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  SimpleGrid,
+  Skeleton,
+  useDisclosure,
+} from "@chakra-ui/react";
 import DiscussionCard from "./discussion-card";
 import DiscussionModal from "./discussion-modal";
 import { useState } from "react";
 import CreateDiscussionModal from "./create-discussion-modal";
 
 const DiscussionBoard = () => {
-  const { data, isFetchingNextPage, fetchNextPage } = useGetDiscussion();
+  const { data, isFetchingNextPage, fetchNextPage, isPending } =
+    useGetDiscussion();
   const items = data?.pages;
   const discussions = items?.flatMap((item) => item.data);
   discussions?.sort((a, b) => {
@@ -30,6 +37,18 @@ const DiscussionBoard = () => {
         </Button>
       </Flex>
       <SimpleGrid columns={3} spacing={{ base: "4", lg: "6" }}>
+        {/* Skeloton */}
+        {isPending &&
+          Array.from({ length: 6 }).map((_, index) => {
+            return (
+              <Skeleton
+                isLoaded={!isPending}
+                key={index}
+                h="340px"
+                borderRadius="2xl"
+              />
+            );
+          })}
         {discussions?.map((discussion) => {
           return (
             <DiscussionCard

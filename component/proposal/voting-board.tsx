@@ -1,10 +1,16 @@
 import useGetVoting, { Voting } from "@/hooks/use-get-voting";
-import { Button, Flex, SimpleGrid, useDisclosure } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  SimpleGrid,
+  Skeleton,
+  useDisclosure,
+} from "@chakra-ui/react";
 import VotingCard from "./voting-card";
 import CreateVotingModal from "./create-voting-modal";
 
 const VotingBoard = () => {
-  const { data, isFetchingNextPage, fetchNextPage } = useGetVoting();
+  const { data, isFetchingNextPage, fetchNextPage, isPending } = useGetVoting();
   const items = data?.pages;
   const votings = items?.flatMap((item) => item.data);
   votings?.sort((a, b) => {
@@ -24,6 +30,18 @@ const VotingBoard = () => {
         </Button>
       </Flex>
       <SimpleGrid columns={3} spacing={{ base: "4", lg: "5" }}>
+        {/* Skeloton */}
+        {isPending &&
+          Array.from({ length: 6 }).map((_, index) => {
+            return (
+              <Skeleton
+                isLoaded={!isPending}
+                key={index}
+                h="340px"
+                borderRadius="2xl"
+              />
+            );
+          })}
         {votings?.map((voting) => {
           return <VotingCard key={voting.objectId} voting={voting} />;
         })}

@@ -1,5 +1,5 @@
 import useGetCard from "@/hooks/use-get-card";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import Registry from "./registry";
 import Image from "next/image";
 import Proposal from "./proposal";
@@ -11,17 +11,19 @@ import {
   useCurrentWallet,
 } from "@mysten/dapp-kit";
 
-const Dapp = () => {
+const Dapp = ({ setPath }: { setPath: Dispatch<SetStateAction<string>> }) => {
   const autoConnectStatus = useAutoConnectWallet();
   const { connectionStatus } = useCurrentWallet();
   const { data, isPending } = useGetCard();
   const isSuitizen = !!data?.length && data?.length > 0;
   return (
     <Flex w="full" h="full" flexDirection="column" gap="2" alignItems="center">
-      {isSuitizen && <Profile />}
+      {isSuitizen && <Profile setPath={setPath} />}
       {!isSuitizen &&
         autoConnectStatus === "attempted" &&
-        (!isPending || connectionStatus === "disconnected") && <Registry />}
+        (!isPending || connectionStatus === "disconnected") && (
+          <Registry setPath={setPath} />
+        )}
       <Box h="512px" w="512px" display="none">
         <canvas id="canvas" width="512" height="512" />
       </Box>

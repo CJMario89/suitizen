@@ -1,21 +1,30 @@
-import { Flex, Icon } from "@chakra-ui/react";
-import Link from "next/link";
+import { Flex } from "@chakra-ui/react";
 import ConnectButton from "./common/connect-button";
 import useGetCard from "@/hooks/use-get-card";
-import { useCurrentAccount } from "@mysten/dapp-kit";
 import UserCell from "./common/user-cell";
 import Logo from "./common/icon/logo";
+import { Dispatch, SetStateAction } from "react";
 
-const Header = ({ noWallet }: { noWallet?: boolean }) => {
+const Header = ({
+  path,
+  setPath,
+}: {
+  path: string;
+  setPath: Dispatch<SetStateAction<string>>;
+}) => {
   const { data } = useGetCard();
   const card = data?.[0];
   const isSuitizen = !!card;
   return (
     <Flex py="4" px="8" justifyContent="space-between">
-      <Link href="/">
-        <Logo w="16" h="16" />
-      </Link>
-      {!noWallet && (
+      <Logo
+        w="16"
+        h="16"
+        onClick={() => {
+          setPath("/");
+        }}
+      />
+      {path !== "/" && (
         <Flex gap="4" alignItems="center">
           {isSuitizen && (
             <UserCell
@@ -27,8 +36,10 @@ const Header = ({ noWallet }: { noWallet?: boolean }) => {
               textProps={{
                 fontSize: "md",
               }}
-              as={Link}
-              href="/app"
+              onClick={() => {
+                setPath("/app");
+              }}
+              cursor="pointer"
             />
           )}
           <ConnectButton />

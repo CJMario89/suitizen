@@ -1,7 +1,17 @@
+import Dapp from "@/component/dapp";
 import Main from "@/component/main";
+import Proposal from "@/component/proposal";
 import Head from "next/head";
+import { Dispatch, SetStateAction, useState } from "react";
 
-function Home() {
+function Home({
+  path,
+  setPath,
+}: {
+  path: string;
+  setPath: Dispatch<SetStateAction<string>>;
+}) {
+  console.log(path === "/community");
   return (
     <>
       <Head>
@@ -10,7 +20,9 @@ function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Main />
+      {path === "/" && <Main setPath={setPath} />}
+      {path === "/app" && <Dapp setPath={setPath} />}
+      {path === "/community" && <Proposal setPath={setPath} />}
     </>
   );
 }

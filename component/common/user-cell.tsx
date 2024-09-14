@@ -8,7 +8,6 @@ import {
   TextProps,
 } from "@chakra-ui/react";
 import Image from "next/image";
-import { LinkProps } from "next/link";
 
 const UserCell = ({
   objectId,
@@ -19,8 +18,7 @@ const UserCell = ({
   objectId?: string;
   imageContainerProps?: BoxProps;
   textProps?: TextProps;
-} & FlexProps &
-  LinkProps) => {
+} & FlexProps) => {
   const { data: card } = useGetCardDetail({
     objectId,
   });

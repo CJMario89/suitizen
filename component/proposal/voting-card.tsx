@@ -88,7 +88,7 @@ const VotingCard = ({ voting }: { voting: Voting }) => {
           <Heading as="h5" h="8" overflowY="auto">
             {voting.topic}
           </Heading>
-          <UserCell href="" objectId={voting.host} />
+          <UserCell objectId={voting.host} />
           <Text h="40" overflowY="auto">
             {voting.description}
           </Text>
