@@ -5,20 +5,27 @@ import {
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 import {
   detectSingleFace,
-  matchDimensions,
-  resizeResults,
-  nets,
-  detectAllFaces,
   WithFaceLandmarks,
   FaceDetection,
   WithFaceDescriptor,
   FaceLandmarks68,
+  WithAge,
+  WithGender,
 } from "face-api.js";
 import { useRef } from "react";
 
 type UseGetFacialDateOption = UseMutationOptions<
-  WithFaceDescriptor<
-    WithFaceLandmarks<{ detection: FaceDetection }, FaceLandmarks68>
+  WithAge<
+    WithGender<
+      WithFaceDescriptor<
+        WithFaceLandmarks<
+          {
+            detection: FaceDetection;
+          },
+          FaceLandmarks68
+        >
+      >
+    >
   >,
   Error,
   void
@@ -29,12 +36,16 @@ const useGetFacialData = (options?: UseGetFacialDateOption) => {
   const percentage = useRef<number>(0);
   const highestSource = useRef<{
     score: number;
-    source?: WithFaceDescriptor<
-      WithFaceLandmarks<
-        {
-          detection: FaceDetection;
-        },
-        FaceLandmarks68
+    source?: WithAge<
+      WithGender<
+        WithFaceDescriptor<
+          WithFaceLandmarks<
+            {
+              detection: FaceDetection;
+            },
+            FaceLandmarks68
+          >
+        >
       >
     >;
   }>({
@@ -45,12 +56,16 @@ const useGetFacialData = (options?: UseGetFacialDateOption) => {
     mutationFn: async () => {
       let currentPercentage = 0;
       const getFacialPromise = new Promise<
-        WithFaceDescriptor<
-          WithFaceLandmarks<
-            {
-              detection: FaceDetection;
-            },
-            FaceLandmarks68
+        WithAge<
+          WithGender<
+            WithFaceDescriptor<
+              WithFaceLandmarks<
+                {
+                  detection: FaceDetection;
+                },
+                FaceLandmarks68
+              >
+            >
           >
         >
       >((resolve, reject) => {
@@ -90,7 +105,8 @@ const useGetFacialData = (options?: UseGetFacialDateOption) => {
           const interval = setInterval(async () => {
             const source = await detectSingleFace(video)
               .withFaceLandmarks()
-              .withFaceDescriptor();
+              .withFaceDescriptor()
+              .withAgeAndGender();
             if (source?.detection?.score && source?.detection?.score > 0.95) {
               percentage.current += Math.random() * 3;
               if (
@@ -134,12 +150,7 @@ const useGetFacialData = (options?: UseGetFacialDateOption) => {
         }
 
         // Load face-api.js models and start detection
-        async function loadModels() {
-          const MODEL_URL = "./weights";
-          await nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
-          await nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-          await nets.faceRecognitionNet.loadFromUri(MODEL_URL);
-
+        async function start() {
           startVideo();
           video.addEventListener("play", detectFaces);
         }
@@ -200,7 +211,7 @@ const useGetFacialData = (options?: UseGetFacialDateOption) => {
         }
 
         // Load models and start everything
-        loadModels();
+        start();
       });
       return getFacialPromise;
     },

@@ -69,7 +69,7 @@ const Mint = ({
           flexDirection="column"
           gap="4"
         >
-          <Heading as="h4">Preparing your Suitizen</Heading>
+          <Heading as="h4">Preparing your Suitizen Card</Heading>
           <Image src={Loading} alt="loading" width="80" height="80" />
         </Flex>
       ) : (

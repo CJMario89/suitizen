@@ -6,16 +6,13 @@ import Image from "next/image";
 import { getUserSuitizenCard, refreshInteractionData } from "@/sui-api";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 
-const Complete = ({
-  step,
-  setPath,
-}: {
-  step: number;
-  setPath: Dispatch<SetStateAction<string>>;
-}) => {
+const Complete = ({ step }: { step: number }) => {
   const [card, setCard] = useState<Card>();
   const currentAccount = useCurrentAccount();
-
+  const { refetch, data } = useGetCard({
+    enabled: false,
+  });
+  console.log(data);
   useEffect(() => {
     if (step === 3 && currentAccount?.address) {
       (async () => {
@@ -71,7 +68,7 @@ const Complete = ({
         size="md"
         boxShadow="0px 0px 5px #afd6ff"
         onClick={() => {
-          setPath("/app");
+          refetch();
         }}
         alignSelf="self-end"
       >

@@ -1,6 +1,10 @@
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { getAnimationStyle } from "./animation-style";
 import useGetFacialData from "@/hooks/use-get-facial-data";
+import usePrepareScanning from "@/hooks/use-prepare-scannig";
+import Image from "next/image";
+import Loading from "/assets/loading.gif";
+import { Gender } from "face-api.js";
 
 export const videoWidth = 300;
 export const videoHeight = 300;
@@ -10,7 +14,7 @@ export default function FaceDetectionBlock({
   onSuccess,
 }: {
   step: number;
-  onSuccess: (facialContent: string) => void;
+  onSuccess: (facialContent: string, gender: Gender) => void;
 }) {
   const {
     mutate: getFacialData,
@@ -18,9 +22,11 @@ export default function FaceDetectionBlock({
     isSuccess,
   } = useGetFacialData({
     onSuccess: (data) => {
-      onSuccess(JSON.stringify(data));
+      onSuccess(JSON.stringify(data), data.gender);
     },
   });
+
+  const { isPending: isPreparing } = usePrepareScanning();
 
   return (
     <Flex
@@ -35,7 +41,20 @@ export default function FaceDetectionBlock({
       alignItems="center"
       {...getAnimationStyle(1, step)}
     >
-      {isIdle && (
+      {isPreparing && (
+        <Flex
+          w="full"
+          h="full"
+          justifyContent="center"
+          alignItems="center"
+          flexDirection="column"
+          gap="4"
+        >
+          <Heading as="h4">Preparing for scannig</Heading>
+          <Image src={Loading} alt="loading" width="80" height="80" />
+        </Flex>
+      )}
+      {isIdle && !isPreparing && (
         <Flex alignItems="center" justifyContent="center">
           <Button
             alignSelf="center"

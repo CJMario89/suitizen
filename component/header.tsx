@@ -20,6 +20,7 @@ const Header = ({
       <Logo
         w="16"
         h="16"
+        cursor="pointer"
         onClick={() => {
           setPath("/");
         }}

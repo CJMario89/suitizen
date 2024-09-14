@@ -1,15 +1,9 @@
 import useGetCard from "@/hooks/use-get-card";
 import React, { Dispatch, SetStateAction } from "react";
 import Registry from "./registry";
-import Image from "next/image";
-import Proposal from "./proposal";
 import { Box, Flex } from "@chakra-ui/react";
 import Profile from "./profile";
-import {
-  useAutoConnectWallet,
-  useCurrentAccount,
-  useCurrentWallet,
-} from "@mysten/dapp-kit";
+import { useAutoConnectWallet, useCurrentWallet } from "@mysten/dapp-kit";
 
 const Dapp = ({ setPath }: { setPath: Dispatch<SetStateAction<string>> }) => {
   const autoConnectStatus = useAutoConnectWallet();
@@ -21,9 +15,7 @@ const Dapp = ({ setPath }: { setPath: Dispatch<SetStateAction<string>> }) => {
       {isSuitizen && <Profile setPath={setPath} />}
       {!isSuitizen &&
         autoConnectStatus === "attempted" &&
-        (!isPending || connectionStatus === "disconnected") && (
-          <Registry setPath={setPath} />
-        )}
+        (!isPending || connectionStatus === "disconnected") && <Registry />}
       <Box h="512px" w="512px" display="none">
         <canvas id="canvas" width="512" height="512" />
       </Box>

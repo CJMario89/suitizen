@@ -25,7 +25,7 @@ const useTransferBackup = (options?: UseTransferBackupProps) => {
         throw new Error("Missing required fields");
       }
       const ptb = await packTransferCardTxb(cardId, index);
-      await mutateAsync({
+      return mutateAsync({
         transactionBlock: ptb,
         options: {
           showBalanceChanges: true,
@@ -36,7 +36,6 @@ const useTransferBackup = (options?: UseTransferBackupProps) => {
           showRawInput: true,
         },
       });
-      return;
     },
     ...options,
   });

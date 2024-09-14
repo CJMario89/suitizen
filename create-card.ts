@@ -12,7 +12,7 @@ export const createCard = ({
     if (ctx) {
       const image = new Image();
       image.crossOrigin = "anonymous";
-      image.src = `${process.env.NEXT_PUBLIC_WALRUS_AGGREGATOR}/8hxbG1k235VOe51eovi8wub4JLS8XC_TjIauqBcFz-g`;
+      image.src = `${process.env.NEXT_PUBLIC_WALRUS_AGGREGATOR}/${pfpId}`;
       image.onload = () => {
         // draw an image in an independent canvas
         // output the blob to remove background API

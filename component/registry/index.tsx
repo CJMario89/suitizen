@@ -14,21 +14,16 @@ import {
   StepStatus,
   StepTitle,
   Tooltip,
-  useSteps,
 } from "@chakra-ui/react";
 import NameServiceBlock from "./name-service-block";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { getAnimationStyle } from "./animation-style";
 import FaceDetectionBlock from "./face-detection-block";
 import useCreateAndPostCard from "@/hooks/use-create-and-post-card";
 import Mint from "./mint";
 import { NameService } from "@/hooks/use-get-name-service";
 import Complete from "./complete";
-import {
-  useAutoConnectWallet,
-  useConnectWallet,
-  useCurrentWallet,
-} from "@mysten/dapp-kit";
+import { useCurrentWallet } from "@mysten/dapp-kit";
 
 const steps = [
   {
@@ -74,11 +69,7 @@ const StepperBlock = ({ step }: { step: number }) => {
   );
 };
 
-const Registry = ({
-  setPath,
-}: {
-  setPath: Dispatch<SetStateAction<string>>;
-}) => {
+const Registry = () => {
   const [step, setStep] = useState(-1);
   const [selectedNameService, setSelectedNameService] = useState<NameService>();
   const {
@@ -97,8 +88,6 @@ const Registry = ({
   });
   console.log(step);
   const { connectionStatus } = useCurrentWallet();
-  const autoConnectStatus = useAutoConnectWallet();
-  const { mutate: connect } = useConnectWallet();
   return (
     <Container
       maxW="container.lg"
@@ -174,10 +163,11 @@ const Registry = ({
             />
             <FaceDetectionBlock
               step={step}
-              onSuccess={(facialContent) => {
+              onSuccess={(facialContent, gender) => {
                 createAndPost({
                   name: selectedNameService?.domainName,
                   facialContent,
+                  gender,
                 });
                 setStep(2);
               }}
@@ -194,7 +184,7 @@ const Registry = ({
                 setStep(3);
               }}
             />
-            <Complete step={step} setPath={setPath} />
+            <Complete step={step} />
           </Flex>
         </Flex>
       </Flex>
