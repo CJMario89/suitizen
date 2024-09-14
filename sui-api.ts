@@ -66,7 +66,8 @@ export async function packMintTxb(
   pfpImg: string,
   cardImg: string,
   faceFeature: string,
-  birth: number
+  birth: number,
+  backup: string[]
 ) {
   let txb: TransactionBlock = new TransactionBlock();
 
@@ -81,6 +82,7 @@ export async function packMintTxb(
     txb.pure.string(faceFeature),
     txb.pure.u64(birth),
     txb.splitCoins(txb.gas, [txb.pure(0.1 * SUI_COIN_DECIMAL)]),
+    txb.pure(backup),
     txb.object(SUI_CLOCK_ID),
   ];
 
@@ -291,7 +293,8 @@ export async function getUserSuitizenCard(address: string) {
       vo.firstName = data.data.content.fields.first_name;
       vo.lastName = data.data.content.fields.last_name;
       vo.birth = data.data.content.fields.birth;
-      vo.guardians = data.data.content.fields.guardians;
+      // vo.guardians = data.data.content.fields.guardians;
+      vo.backup = data.data.content.fields.backup;
       userSuitizenCardList.push(vo);
     }
   }
@@ -402,7 +405,7 @@ export async function getInteraction(
   }
 }
 
-export async function getCardIdByName(name: string) {
+export async function getCarIddByName(name: string) {
   let realName = name + "sui";
   const decoder = new TextDecoder("utf-8");
   let objectResponse: any = await suiClient.getObject({
@@ -429,205 +432,216 @@ export async function getCardIdByName(name: string) {
   return null;
 }
 
-export async function packAddGuardianTxb(cardId: string, guardianName: string) {
-  let guardianCardId = await getCardIdByName(guardianName);
+// export async function packAddGuardianTxb(
+//   cardId: string,
+//   guardianName: string
+// ) {
 
-  if (guardianCardId == null) {
-    throw new Error(guardianName + " Not Found");
-  }
+//   let guardianCardId = await getCarIddByName(guardianName);
 
+//   if (guardianCardId == null) {
+//     throw new Error(guardianName + " Not Found");
+//   }
+
+//   let txb: TransactionBlock = new TransactionBlock();
+
+//   let args: TransactionArgument[] = [
+//     txb.object(GLOBAL_CONFIG_ID),
+//     txb.object(cardId),
+//     txb.pure.address(guardianCardId)
+//   ];
+
+//   console.log(args);
+
+//   txb.moveCall({
+//     target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${ADD_GUARDIAN_FUN}`,
+//     arguments: args
+//   });
+
+//   return txb;
+// }
+
+// export async function packRemoveGuardianTxb(
+//   cardId: string,
+//   guardianName: string
+// ) {
+
+//   let guardianCardId = await getCarIddByName(guardianName);
+
+//   if (guardianCardId == null) {
+//     throw new Error(guardianName + " Not Found");
+//   }
+
+//   let txb: TransactionBlock = new TransactionBlock();
+
+//   let args: TransactionArgument[] = [
+//     txb.object(GLOBAL_CONFIG_ID),
+//     txb.object(cardId),
+//     txb.pure.address(guardianCardId)
+//   ];
+
+//   console.log(args);
+
+//   txb.moveCall({
+//     target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${REMOVE_GUARDIAN_FUN}`,
+//     arguments: args
+//   });
+
+//   return txb;
+// }
+
+// export async function packNewTransferRequestTxb(
+//   cardId: string,
+//   newOwnerAddress: string
+// ) {
+
+//   let txb: TransactionBlock = new TransactionBlock();
+
+//   let args: TransactionArgument[] = [
+//     txb.object(GLOBAL_CONFIG_ID),
+//     txb.object(TRANSFER_REQUEST_RECORD_ID),
+//     txb.pure(newOwnerAddress),
+//     txb.object(cardId)
+//   ];
+
+//   console.log(args);
+
+//   txb.moveCall({
+//     target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${NEW_TRANSFER_REQUEST_FUN}`,
+//     arguments: args
+//   });
+
+//   return txb;
+// }
+
+// export async function getTransferRequestList(
+//   cardId: string,
+//   type: number
+// ) {
+
+//   let transferRequestList = [];
+//   let objectResponse: any = await suiClient.getObject({
+//     id: TRANSFER_REQUEST_RECORD_ID,
+//     options: {
+//       showContent: true
+//     }
+//   });
+//   if (objectResponse.data) {
+//     console.log(objectResponse);
+//     let tableId: string = "";
+//     if (type == 0){
+//       // 查自己發起的請求
+//       tableId = objectResponse.data.content.fields.requester_to_requests.fields.id.id;
+//     } else {
+//       // 查別人發起，自己是監護人的請求
+//       tableId = objectResponse.data.content.fields.guardian_to_requests.fields.id.id;
+//     }
+//     let tableVo: any = await getTableData(tableId, null, null);
+//       if (tableVo.tableMap.size > 0) {
+//         if (tableVo.tableMap.has(cardId)) {
+//           // 是發起者
+//           for (let requestId of tableVo.tableMap.get(cardId)) {
+//             let transferShardObjectResp: any = await suiClient.getObject({
+//               id: requestId,
+//               options: {
+//                 showContent: true
+//               }
+//             });
+//             if (transferShardObjectResp.data) {
+//               console.log(transferShardObjectResp.data);
+//               let requestVo: any = {};
+//               requestVo.cardId = transferShardObjectResp.data.content.fields.card_id;
+//               requestVo.confirmThreshold = transferShardObjectResp.data.content.fields.confirm_threshold;
+//               requestVo.currentConfirm = transferShardObjectResp.data.content.fields.current_confirm;
+//               requestVo.guardians = transferShardObjectResp.data.content.fields.guardians;
+//               requestVo.newOwner = transferShardObjectResp.data.content.fields.new_owner;
+//               requestVo.objectId = transferShardObjectResp.data.objectId;
+//               transferRequestList.push(requestVo);
+//             }
+//           }
+//         }
+//       }
+//   }
+//   return transferRequestList;
+// }
+
+// export async function packCancelTransferRequestTxb(
+//   cardId: string,
+//   requestId: string
+// ) {
+
+//   let txb: TransactionBlock = new TransactionBlock();
+
+//   let args: TransactionArgument[] = [
+//     txb.object(GLOBAL_CONFIG_ID),
+//     txb.object(TRANSFER_REQUEST_RECORD_ID),
+//     txb.object(requestId),
+//     txb.object(cardId)
+//   ];
+
+//   console.log(args);
+
+//   txb.moveCall({
+//     target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${CANCEL_TRANSFER_REQUEST_FUN}`,
+//     arguments: args
+//   });
+
+//   return txb;
+// }
+
+// export async function packConfirmTxb(
+//   cardId: string,
+//   requestId: string
+// ) {
+
+//   let txb: TransactionBlock = new TransactionBlock();
+
+//   let args: TransactionArgument[] = [
+//     txb.object(GLOBAL_CONFIG_ID),
+//     txb.object(cardId),
+//     txb.object(requestId)
+//   ];
+
+//   console.log(args);
+
+//   txb.moveCall({
+//     target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${CONFIRM_FUN}`,
+//     arguments: args
+//   });
+
+//   return txb;
+// }
+
+// export async function packCancelConfirmTxb(
+//   cardId: string,
+//   requestId: string
+// ) {
+
+//   let txb: TransactionBlock = new TransactionBlock();
+
+//   let args: TransactionArgument[] = [
+//     txb.object(GLOBAL_CONFIG_ID),
+//     txb.object(cardId),
+//     txb.object(requestId)
+//   ];
+
+//   console.log(args);
+
+//   txb.moveCall({
+//     target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${CANCEL_CONFIRM_FUN}`,
+//     arguments: args
+//   });
+
+//   return txb;
+// }
+
+export async function packTransferCardTxb(cardId: string, index: number) {
   let txb: TransactionBlock = new TransactionBlock();
 
   let args: TransactionArgument[] = [
     txb.object(GLOBAL_CONFIG_ID),
     txb.object(cardId),
-    txb.pure.address(guardianCardId),
-  ];
-
-  console.log(args);
-
-  txb.moveCall({
-    target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${ADD_GUARDIAN_FUN}`,
-    arguments: args,
-  });
-
-  return txb;
-}
-
-export async function packRemoveGuardianTxb(
-  cardId: string,
-  guardianName: string
-) {
-  let guardianCardId = await getCardIdByName(guardianName);
-
-  if (guardianCardId == null) {
-    throw new Error(guardianName + " Not Found");
-  }
-
-  let txb: TransactionBlock = new TransactionBlock();
-
-  let args: TransactionArgument[] = [
-    txb.object(GLOBAL_CONFIG_ID),
-    txb.object(cardId),
-    txb.pure.address(guardianCardId),
-  ];
-
-  console.log(args);
-
-  txb.moveCall({
-    target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${REMOVE_GUARDIAN_FUN}`,
-    arguments: args,
-  });
-
-  return txb;
-}
-
-export async function packNewTransferRequestTxb(
-  cardId: string,
-  newOwnerAddress: string
-) {
-  let txb: TransactionBlock = new TransactionBlock();
-
-  let args: TransactionArgument[] = [
-    txb.object(GLOBAL_CONFIG_ID),
-    txb.object(TRANSFER_REQUEST_RECORD_ID),
-    txb.pure(newOwnerAddress),
-    txb.object(cardId),
-  ];
-
-  console.log(args);
-
-  txb.moveCall({
-    target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${NEW_TRANSFER_REQUEST_FUN}`,
-    arguments: args,
-  });
-
-  return txb;
-}
-
-export async function getTransferRequestList(cardId: string, type: number) {
-  let transferRequestList = [];
-  let objectResponse: any = await suiClient.getObject({
-    id: TRANSFER_REQUEST_RECORD_ID,
-    options: {
-      showContent: true,
-    },
-  });
-  if (objectResponse.data) {
-    console.log(objectResponse);
-    let tableId: string = "";
-    if (type == 0) {
-      // 查自己發起的請求
-      tableId =
-        objectResponse.data.content.fields.requester_to_requests.fields.id.id;
-    } else {
-      // 查別人發起，自己是監護人的請求
-      tableId =
-        objectResponse.data.content.fields.guardian_to_requests.fields.id.id;
-    }
-    let tableVo: any = await getTableData(tableId, null, null);
-    if (tableVo.tableMap.size > 0) {
-      if (tableVo.tableMap.has(cardId)) {
-        // 是發起者
-        for (let requestId of tableVo.tableMap.get(cardId)) {
-          let transferShardObjectResp: any = await suiClient.getObject({
-            id: requestId,
-            options: {
-              showContent: true,
-            },
-          });
-          if (transferShardObjectResp.data) {
-            console.log(transferShardObjectResp.data);
-            let requestVo: any = {};
-            requestVo.cardId =
-              transferShardObjectResp.data.content.fields.card_id;
-            requestVo.confirmThreshold =
-              transferShardObjectResp.data.content.fields.confirm_threshold;
-            requestVo.currentConfirm =
-              transferShardObjectResp.data.content.fields.current_confirm;
-            requestVo.guardians =
-              transferShardObjectResp.data.content.fields.guardians;
-            requestVo.newOwner =
-              transferShardObjectResp.data.content.fields.new_owner;
-            requestVo.objectId = transferShardObjectResp.data.objectId;
-            transferRequestList.push(requestVo);
-          }
-        }
-      }
-    }
-  }
-  return transferRequestList;
-}
-
-export async function packCancelTransferRequestTxb(
-  cardId: string,
-  requestId: string
-) {
-  let txb: TransactionBlock = new TransactionBlock();
-
-  let args: TransactionArgument[] = [
-    txb.object(GLOBAL_CONFIG_ID),
-    txb.object(TRANSFER_REQUEST_RECORD_ID),
-    txb.object(requestId),
-    txb.object(cardId),
-  ];
-
-  console.log(args);
-
-  txb.moveCall({
-    target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${CANCEL_TRANSFER_REQUEST_FUN}`,
-    arguments: args,
-  });
-
-  return txb;
-}
-
-export async function packConfirmTxb(cardId: string, requestId: string) {
-  let txb: TransactionBlock = new TransactionBlock();
-
-  let args: TransactionArgument[] = [
-    txb.object(GLOBAL_CONFIG_ID),
-    txb.object(cardId),
-    txb.object(requestId),
-  ];
-
-  console.log(args);
-
-  txb.moveCall({
-    target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${CONFIRM_FUN}`,
-    arguments: args,
-  });
-
-  return txb;
-}
-
-export async function packCancelConfirmTxb(cardId: string, requestId: string) {
-  let txb: TransactionBlock = new TransactionBlock();
-
-  let args: TransactionArgument[] = [
-    txb.object(GLOBAL_CONFIG_ID),
-    txb.object(cardId),
-    txb.object(requestId),
-  ];
-
-  console.log(args);
-
-  txb.moveCall({
-    target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${CANCEL_CONFIRM_FUN}`,
-    arguments: args,
-  });
-
-  return txb;
-}
-
-export async function packTransferCardTxb(cardId: string, requestId: string) {
-  let txb: TransactionBlock = new TransactionBlock();
-
-  let args: TransactionArgument[] = [
-    txb.object(GLOBAL_CONFIG_ID),
-    txb.object(TRANSFER_REQUEST_RECORD_ID),
-    txb.object(cardId),
-    txb.object(requestId),
+    txb.pure.u64(index),
   ];
 
   console.log(args);
@@ -819,6 +833,7 @@ export async function refreshInteractionData() {
     }
   }
 }
+
 export async function getCardDetail(objectId: string) {
   let cardDetail: any = {};
   let objectResponse: any = await suiClient.getObject({

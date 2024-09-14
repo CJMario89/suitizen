@@ -37,11 +37,11 @@ const steps = [
   },
   {
     title: "Face detection",
-    description: "Detect your face to mint your card.",
+    description: "Detect your face to prepare for card creation.",
   },
   {
-    title: "Minting",
-    description: "Mint your card.",
+    title: "Create Suitizen card",
+    description: "Generate your Suitizen card.",
   },
   {
     title: "Complete",

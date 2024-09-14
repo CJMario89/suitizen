@@ -10,6 +10,7 @@ const useMint = ({
   cardId,
   nameId,
   index,
+  backup,
   ...options
 }: {
   faceId?: string;
@@ -17,6 +18,7 @@ const useMint = ({
   cardId?: string;
   nameId?: string;
   index: number;
+  backup: string[];
 } & UseMintProps) => {
   const { mutateAsync } = useSignAndExecuteTransactionBlock();
 
@@ -32,7 +34,8 @@ const useMint = ({
         pfpId,
         cardId,
         faceId,
-        Date.now()
+        Date.now(),
+        backup
       );
       return mutateAsync({
         transactionBlock: ptb,

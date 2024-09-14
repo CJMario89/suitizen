@@ -22,7 +22,7 @@ const Dapp = () => {
       {!isSuitizen &&
         autoConnectStatus === "attempted" &&
         (!isPending || connectionStatus === "disconnected") && <Registry />}
-      <Box h="512px" w="512px">
+      <Box h="512px" w="512px" display="none">
         <canvas id="canvas" width="512" height="512" />
       </Box>
     </Flex>

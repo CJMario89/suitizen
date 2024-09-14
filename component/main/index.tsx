@@ -22,7 +22,7 @@ const Main = () => {
           muted
           loop
         >
-          <source src="/suitizen-main.mov" type="video/mp4" />
+          <source src="/waving.mov" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       </Box>

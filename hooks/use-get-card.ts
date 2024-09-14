@@ -8,6 +8,7 @@ export type Card = {
   faceFeature: string;
   firstName: string;
   lastName: string;
+  backup: string[];
 };
 
 type UseGetCardProps = Omit<UseQueryOptions<Card[]>, "queryKey">;
