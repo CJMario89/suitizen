@@ -21,6 +21,15 @@ import IconClose from "../common/icon/close";
 import ErrorText from "../common/error-text";
 import { refreshInteractionData } from "@/sui-api";
 
+// await 1s
+export const await1s = async () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve("");
+    }, 1000);
+  });
+};
+
 const CreateVotingModal = ({
   isOpen,
   onClose,
@@ -34,7 +43,10 @@ const CreateVotingModal = ({
   const { refetch } = useGetVoting();
   const { mutate: createVoting, isPending } = useCreateVoting({
     onSuccess: async () => {
+      await await1s();
+
       await refreshInteractionData();
+
       refetch();
       onClose();
     },
@@ -90,7 +102,6 @@ const CreateVotingModal = ({
       }}
     >
       <ModalOverlay />
-      <ModalCloseButton />
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -98,6 +109,8 @@ const CreateVotingModal = ({
         }}
       >
         <ModalContent>
+          <ModalCloseButton />
+
           <ModalHeader>
             <Heading justifyContent="center" w="full">
               Create New Voting
@@ -191,6 +204,7 @@ const CreateVotingModal = ({
                   setErrors([]);
                   onClose();
                 }}
+                isDisabled={isPending}
                 variant="outline"
               >
                 Cancel

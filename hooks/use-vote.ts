@@ -1,6 +1,9 @@
+import { ModalContext } from "@/component/common/error-modal";
 import { packVoteTxb } from "@/sui-api";
+import { UseDisclosureProps } from "@chakra-ui/react";
 import { useSignAndExecuteTransactionBlock } from "@mysten/dapp-kit";
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
+import { useContext } from "react";
 
 type UseVoteProps = UseMutationOptions<
   any,
@@ -13,7 +16,15 @@ type UseVoteProps = UseMutationOptions<
 >;
 
 const useVote = (options?: UseVoteProps) => {
-  const { mutateAsync } = useSignAndExecuteTransactionBlock();
+  const errorDisclosure = useContext<UseDisclosureProps>(ModalContext);
+
+  const { mutateAsync } = useSignAndExecuteTransactionBlock({
+    onError: (e) => {
+      if (!e.message.includes("Rejected from user")) {
+        errorDisclosure.onOpen?.();
+      }
+    },
+  });
   return useMutation({
     mutationFn: async ({
       voteOption,

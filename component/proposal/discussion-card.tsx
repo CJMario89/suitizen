@@ -13,9 +13,9 @@ const DiscussionCard = ({
   onOpenDrawer: ({ discussion }: { discussion: Discussion }) => void;
 }) => {
   const { data: card } = useGetCard();
-  console.log(discussion);
+  //console.log(discussion);
   const hasComments = discussion?.comments?.length > 0;
-  console.log(discussion);
+  //console.log(discussion);
   return (
     <Flex
       flexDirection="column"

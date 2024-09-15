@@ -22,18 +22,17 @@ const UserCell = ({
   const { data: card } = useGetCardDetail({
     objectId,
   });
-  console.log(card);
   return (
     <Flex gap="2" alignItems="center" {...restProps}>
       <Box
-        w="4"
-        h="4"
+        w={{ base: "3", md: "4" }}
+        h={{ base: "3", md: "4" }}
         borderRadius="full"
         overflow="hidden"
         {...imageContainerProps}
       >
         <Image
-          src={card?.cardImg ?? ""}
+          src={card?.pfpImg ?? ""}
           alt={card?.lastName ?? ""}
           width={32}
           height={32}

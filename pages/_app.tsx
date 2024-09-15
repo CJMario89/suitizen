@@ -15,6 +15,7 @@ import { getFullnodeUrl } from "@mysten/sui/client";
 import "@mysten/dapp-kit/dist/index.css";
 import React, { useState } from "react";
 import BackgroundAnimation from "@/component/common/background-animation";
+import { ErrorModalProvider } from "@/component/common/error-modal";
 React.useLayoutEffect = React.useEffect;
 export default function App({
   Component,
@@ -40,10 +41,12 @@ export default function App({
       <QueryClientProvider client={queryClient}>
         <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
           <WalletProvider autoConnect>
-            <Flex minH="100vh" flexDirection="column">
-              <Header path={path} setPath={setPath} />
-              <Component {...pageProps} setPath={setPath} path={path} />
-            </Flex>
+            <ErrorModalProvider>
+              <Flex minH="100vh" flexDirection="column">
+                <Header path={path} setPath={setPath} />
+                <Component {...pageProps} setPath={setPath} path={path} />
+              </Flex>
+            </ErrorModalProvider>
           </WalletProvider>
         </SuiClientProvider>
       </QueryClientProvider>

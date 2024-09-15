@@ -12,6 +12,7 @@ import useVote from "@/hooks/use-vote";
 import useGetCard from "@/hooks/use-get-card";
 import { useEffect, useState } from "react";
 import { refreshInteractionData } from "@/sui-api";
+import { await1s } from "./create-voting-modal";
 
 const VotingOption = ({
   proposalId,
@@ -25,6 +26,8 @@ const VotingOption = ({
   const [isTargetRefetching, setIsTargetRefetching] = useState(false);
   const { mutate: vote, isPending } = useVote({
     onSuccess: async () => {
+      await await1s();
+
       await refreshInteractionData();
       refetch();
     },
@@ -74,7 +77,6 @@ const VotingOption = ({
 
 const VotingCard = ({ voting }: { voting: Voting }) => {
   const hasOptions = voting.options.length > 0;
-  console.log(voting);
   return (
     <Flex
       flexDirection="column"

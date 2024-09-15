@@ -10,13 +10,15 @@ const Main = ({ setPath }: { setPath: Dispatch<SetStateAction<string>> }) => {
       flexDirection="column"
       alignItems="center"
       gap="10"
-      bgImage={`url("")`}
+      h="100vh"
+      justifyContent="center"
     >
       <Box w="full" h="full" position="absolute" top="0" left="0" zIndex="-1">
         <video
           style={{
-            maxWidth: "none",
-            height: "100%",
+            minWidth: "100%",
+            minHeight: "100%",
+            objectFit: "cover",
           }}
           autoPlay
           playsInline
@@ -27,16 +29,22 @@ const Main = ({ setPath }: { setPath: Dispatch<SetStateAction<string>> }) => {
           Your browser does not support the video tag.
         </video>
       </Box>
-      <Heading
-        mt="40"
-        as="h1"
-        letterSpacing="0.5px"
-        textAlign="center"
-        maxW="500px"
-        textShadow="2px 2px 8px rgba(0, 0, 0, 1), 0 0 10px rgba(0, 0, 0, 1)"
-      >
-        Decentralized Identity Voting on Sui.
-      </Heading>
+      <Flex flexDirection="column" alignItems="center">
+        <Heading
+          as="h1"
+          fontSize={{ base: "4xl", md: "5xl" }}
+          letterSpacing="0.5px"
+          textAlign="center"
+          maxW="600px"
+          textShadow="2px 2px 8px rgba(0, 0, 0, 1), 0 0 10px rgba(0, 0, 0, 1)"
+        >
+          Real Identity, Real Human
+        </Heading>
+        <Heading as="h1" fontSize={{ base: "4xl", md: "5xl" }}>
+          - For Sui Citizens.
+        </Heading>
+      </Flex>
+
       <Heading
         as="h6"
         textAlign="center"
@@ -44,12 +52,12 @@ const Main = ({ setPath }: { setPath: Dispatch<SetStateAction<string>> }) => {
         textShadow="2px 2px 8px rgba(0, 0, 0, 1), 0 0 10px rgba(0, 0, 0, 1)"
       >
         Empowering secure, decentralized identity. Experience trustless
-        participation in governance and decision-making.
+        participation in community.
       </Heading>
       <Button
         mt="4"
         onClick={() => setPath("/app")}
-        size="lg"
+        size={{ base: "md", md: "lg" }}
         boxShadow={"0px 0px 10px rgba(0, 0, 0, 1)"}
       >
         Launch app

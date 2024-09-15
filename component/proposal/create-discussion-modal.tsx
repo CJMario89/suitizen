@@ -18,6 +18,7 @@ import {
 import { FormEvent, useRef, useState } from "react";
 import ErrorText from "../common/error-text";
 import { refreshInteractionData } from "@/sui-api";
+import { await1s } from "./create-voting-modal";
 
 const topicErrorText = "Topic is required";
 const descriptionErrorText = "Description is required";
@@ -35,7 +36,9 @@ const CreateDiscussionModal = ({
   const { refetch } = useGetDiscussion();
   const { mutate: createDiscussion, isPending } = useCreateDiscussion({
     onSuccess: async () => {
-      console.log("onSuccess");
+      //console.log("onSuccess");
+      await await1s();
+
       await refreshInteractionData();
       refetch();
       onClose();
@@ -81,9 +84,10 @@ const CreateDiscussionModal = ({
       }}
     >
       <ModalOverlay />
-      <ModalCloseButton />
       <form onSubmit={onSubmit}>
         <ModalContent>
+          <ModalCloseButton />
+
           <ModalHeader>
             <Heading justifyContent="center" w="full">
               Create New Discussion
@@ -134,6 +138,7 @@ const CreateDiscussionModal = ({
                   setErrors([]);
                   onClose();
                 }}
+                isDisabled={isPending}
                 variant="outline"
               >
                 Cancel

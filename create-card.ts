@@ -50,8 +50,8 @@ export const createCard = ({
           ctx.fillText("Last Name:", 122, 420);
           ctx.fillText("First Name:", 122, 445);
           ctx.fillText("Birth:", 122, 470);
-          ctx.fillText("sui", 190, 420);
-          ctx.fillText(name, 190, 445);
+          ctx.fillText(name.split(".")[1], 190, 420);
+          ctx.fillText(name.split(".")[0], 190, 445);
           const formattedDate = new Date().toLocaleDateString("en-US", {
             day: "numeric",
             month: "short",

@@ -14,6 +14,7 @@ import {
   StepStatus,
   StepTitle,
   Tooltip,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import NameServiceBlock from "./name-service-block";
 import { useState } from "react";
@@ -24,6 +25,7 @@ import Mint from "./mint";
 import { NameService } from "@/hooks/use-get-name-service";
 import Complete from "./complete";
 import { useCurrentWallet } from "@mysten/dapp-kit";
+import Backup from "./backup";
 
 const steps = [
   {
@@ -35,6 +37,10 @@ const steps = [
     description: "Detect your face to prepare for card creation.",
   },
   {
+    title: "Set backup address",
+    description: "Set backup address for your card.",
+  },
+  {
     title: "Create Suitizen card",
     description: "Generate your Suitizen card.",
   },
@@ -44,9 +50,21 @@ const steps = [
   },
 ];
 
-const StepperBlock = ({ step }: { step: number }) => {
+const StepperBlock = ({
+  step,
+  isInStep,
+}: {
+  step: number;
+  isInStep?: boolean;
+}) => {
+  const [isDesktop] = useMediaQuery("(min-width: 768px)");
   return (
-    <Stepper index={step} orientation="vertical" py="8">
+    <Stepper
+      index={step}
+      orientation="vertical"
+      py="8"
+      display={isDesktop || !isInStep ? "flex" : "none"}
+    >
       {steps.map((step, index) => (
         <Step key={index}>
           <StepIndicator>
@@ -72,21 +90,19 @@ const StepperBlock = ({ step }: { step: number }) => {
 const Registry = () => {
   const [step, setStep] = useState(-1);
   const [selectedNameService, setSelectedNameService] = useState<NameService>();
+  const [backups, setBackups] = useState<string[]>([""]);
+
   const {
     mutate: createAndPost,
     data: card,
     isPending: isCreating,
   } = useCreateAndPostCard({
-    onSuccess: (data) => {
-      console.log(data);
-    },
     onError: (e) => {
       window.location.reload();
-      alert("Create and post card error");
+      alert("Create Suitizen Card Error");
       console.log(e);
     },
   });
-  console.log(step);
   const { connectionStatus } = useCurrentWallet();
   return (
     <Container
@@ -96,16 +112,32 @@ const Registry = () => {
       alignItems="center"
       // bg="darkTheme.800"
       p="8"
+      h="100vh"
+      justifyContent="center"
     >
       {step === -1 && (
         <Flex
           flexDirection="column"
           alignItems="center"
           pt="20"
-          gap="8"
+          gap={{
+            base: "4",
+            md: "8",
+          }}
           {...getAnimationStyle(-1, step)}
         >
-          <Heading as="h3" w="500px" textAlign="center">
+          <Heading
+            as="h3"
+            fontSize={{
+              base: "2xl",
+              md: "4xl",
+            }}
+            w={{
+              base: "full",
+              md: "500px",
+            }}
+            textAlign="center"
+          >
             You are steps away from becoming a Suitizen on Sui.
           </Heading>
           <Tooltip
@@ -136,13 +168,13 @@ const Registry = () => {
       )}
 
       <Flex
-        h={step === -1 ? "400px" : "600px"}
+        h={step === -1 ? "0px" : "600px"}
         position="relative"
         w="full"
         visibility={step === -1 ? "hidden" : "visible"}
         gap="8"
       >
-        {step !== -1 && <StepperBlock step={step} />}
+        {step !== -1 && <StepperBlock step={step} isInStep />}
         <Flex position="relative" w="full" flexDirection="column" gap="4">
           <Heading as="h3">{steps[step]?.title}</Heading>
           <Flex
@@ -172,16 +204,26 @@ const Registry = () => {
                 setStep(2);
               }}
             />
+            <Backup
+              setBackups={setBackups}
+              step={step}
+              backups={backups}
+              isPreparing={isCreating}
+              onSuccess={() => {
+                setBackups(backups);
+                setStep(3);
+              }}
+            />
             <Mint
+              backups={backups}
               step={step}
               faceId={card?.walrusFacialId}
               pfpId={card?.pfpId}
               cardId={card?.walrusCardId}
               nameId={selectedNameService?.objectId}
               index={Math.floor(Math.random() * 10000)}
-              isPreparing={isCreating}
               onSuccess={() => {
-                setStep(3);
+                setStep(4);
               }}
             />
             <Complete step={step} />

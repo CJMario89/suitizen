@@ -19,7 +19,7 @@ import {
 import { useState } from "react";
 import Wallet from "./icon/wallet";
 
-const formatAddress = (address?: string) =>
+export const formatAddress = (address?: string) =>
   `${address?.slice(0, 6)}...${address?.slice(-4)}`;
 
 const AddressCell = ({
@@ -51,11 +51,19 @@ const ConnectButton = () => {
         <Popover trigger="hover" placement="bottom-end" openDelay={100}>
           <PopoverTrigger>
             <Button
-              px="4"
+              px={{ base: "3", md: "4" }}
               variant="ghost"
-              fontSize="md"
+              fontSize={{ base: "xs", md: "md" }}
               color="primary.400"
-              leftIcon={<Wallet color="primary.400" />}
+              leftIcon={
+                <Wallet
+                  color="primary.400"
+                  boxSize={{
+                    base: "4",
+                    md: "6",
+                  }}
+                />
+              }
             >
               {formatAddress(currentAccount?.address)}
             </Button>

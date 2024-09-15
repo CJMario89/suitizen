@@ -44,8 +44,7 @@ const useCreateAndPostCard = (options?: UseCreateAndPostCardPoOption) => {
         createCard({ pfpId: pfpObjectId, name }),
         postWalrus({ content: facialContent, type: "application/json" }),
       ]);
-      // const buffer = await createCard({ image: pfpImage, name });
-      console.log(buffer);
+
       // post card and facial content
 
       const [walrusCardObject] = await Promise.all([
@@ -55,7 +54,6 @@ const useCreateAndPostCard = (options?: UseCreateAndPostCardPoOption) => {
           query: "epochs=5",
         }),
       ]);
-      console.log(pfpObjectId, walrusCardObject, walrusFacialObject);
       const pfpId = pfpObjectId;
       const walrusCardId =
         walrusCardObject?.newlyCreated?.blobObject?.blobId ??
@@ -75,7 +73,6 @@ const useCreateAndPostCard = (options?: UseCreateAndPostCardPoOption) => {
 };
 
 async function choosePFP({ gender }: { gender: string }) {
-  console.log(gender);
   // boy 1~100 girl 101~200
   const index =
     gender === "male"

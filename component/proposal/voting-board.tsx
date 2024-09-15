@@ -29,7 +29,13 @@ const VotingBoard = () => {
           Create New Voting
         </Button>
       </Flex>
-      <SimpleGrid columns={3} spacing={{ base: "4", lg: "5" }}>
+      <SimpleGrid
+        columns={{
+          base: 1,
+          md: 3,
+        }}
+        spacing={{ base: "4", lg: "5" }}
+      >
         {/* Skeloton */}
         {isPending &&
           Array.from({ length: 6 }).map((_, index) => {

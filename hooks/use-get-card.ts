@@ -8,6 +8,7 @@ export type Card = {
   faceFeature: string;
   firstName: string;
   lastName: string;
+  pfpImg: string;
   backup: string[];
 };
 

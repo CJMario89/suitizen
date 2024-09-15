@@ -1,6 +1,13 @@
+import { ModalContext } from "@/component/common/error-modal";
 import { packMintTxb } from "@/sui-api";
-import { useSignAndExecuteTransactionBlock } from "@mysten/dapp-kit";
+import { UseDisclosureProps } from "@chakra-ui/react";
+import {
+  useCurrentAccount,
+  useSignAndExecuteTransactionBlock,
+  useSuiClient,
+} from "@mysten/dapp-kit";
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
+import { useContext } from "react";
 
 type UseMintProps = UseMutationOptions<any, Error, void>;
 
@@ -20,13 +27,30 @@ const useMint = ({
   index: number;
   backup: string[];
 } & UseMintProps) => {
-  const { mutateAsync } = useSignAndExecuteTransactionBlock();
+  const errorDisclosure = useContext<UseDisclosureProps>(ModalContext);
+  const client = useSuiClient();
+  const currentAccount = useCurrentAccount();
+
+  const { mutateAsync } = useSignAndExecuteTransactionBlock({
+    onError: (e) => {
+      if (!e.message.includes("Rejected from user")) {
+        errorDisclosure.onOpen?.();
+      }
+    },
+  });
 
   return useMutation({
     mutationFn: async () => {
-      console.log("minting", nameId, pfpId, cardId, faceId, index);
-      if (!nameId || !pfpId || !cardId || !faceId) {
+      if (!nameId || !pfpId || !cardId || !faceId || !currentAccount?.address) {
         throw new Error("Missing required fields");
+      }
+      const coin = await client.getBalance({
+        owner: currentAccount?.address,
+      });
+      if (Number(coin.totalBalance) < 120000000) {
+        errorDisclosure.onOpen?.();
+
+        throw new Error("Insufficient funds");
       }
       const ptb = await packMintTxb(
         nameId,
@@ -37,7 +61,7 @@ const useMint = ({
         Date.now(),
         backup
       );
-      return mutateAsync({
+      const result = await mutateAsync({
         transactionBlock: ptb,
         options: {
           showBalanceChanges: true,
@@ -48,6 +72,8 @@ const useMint = ({
           showRawInput: true,
         },
       });
+      console.log("minted", result);
+      return result;
     },
     ...options,
   });

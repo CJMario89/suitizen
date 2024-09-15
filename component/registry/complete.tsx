@@ -12,12 +12,11 @@ const Complete = ({ step }: { step: number }) => {
   const { refetch, data } = useGetCard({
     enabled: false,
   });
-  console.log(data);
+  const [loaded, setLoaded] = useState(false);
   useEffect(() => {
-    if (step === 3 && currentAccount?.address) {
+    if (step === 4 && currentAccount?.address) {
       (async () => {
         const data = await getUserSuitizenCard(currentAccount?.address);
-        console.log(currentAccount?.address);
 
         const retry = async () => {
           const data = await getUserSuitizenCard(currentAccount?.address);
@@ -35,7 +34,6 @@ const Complete = ({ step }: { step: number }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, currentAccount?.address]);
-  console.log(card?.cardImg);
   return (
     <Flex
       position="absolute"
@@ -46,7 +44,7 @@ const Complete = ({ step }: { step: number }) => {
       bg="darkTheme.700"
       justifyContent="space-between"
       p="4"
-      {...getAnimationStyle(3, step)}
+      {...getAnimationStyle(4, step)}
     >
       <Heading size="md" color="white">
         Congratulations! You are now a Suitizen.
@@ -56,8 +54,12 @@ const Complete = ({ step }: { step: number }) => {
       )}
       {!!card && (
         <Box w="256px" h="256px" alignSelf="center">
+          {!loaded && <Skeleton w="256px" h="256px" borderRadius="lg" />}
           <Image
             src={card?.cardImg ?? ""}
+            onLoadingComplete={() => {
+              setLoaded(true);
+            }}
             alt="Suitizen Card"
             width={512}
             height={512}

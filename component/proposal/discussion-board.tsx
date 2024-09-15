@@ -20,7 +20,6 @@ const DiscussionBoard = () => {
     return Number(b.flowNum) - Number(a.flowNum);
   });
   const currentPage = data?.pages?.[data.pages.length - 1];
-  console.log(currentPage);
   const hasNextPage = currentPage?.hasNextPage;
   const drawerDisclosure = useDisclosure();
   const createDiscussionModalDisclosure = useDisclosure();
@@ -36,7 +35,7 @@ const DiscussionBoard = () => {
           Create New Discussion
         </Button>
       </Flex>
-      <SimpleGrid columns={3} spacing={{ base: "4", lg: "6" }}>
+      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: "4", lg: "6" }}>
         {/* Skeloton */}
         {isPending &&
           Array.from({ length: 6 }).map((_, index) => {

@@ -20,6 +20,7 @@ import { useRef } from "react";
 import UserCell from "../common/user-cell";
 import UserCommentCell from "../common/user-comment-cell";
 import { refreshInteractionData } from "@/sui-api";
+import { await1s } from "./create-voting-modal";
 
 const DiscussionModal = ({
   isOpen,
@@ -42,6 +43,9 @@ const DiscussionModal = ({
   const { data: card } = useGetCard();
   const { mutate: comment, isPending: isCommenting } = usePostComment({
     onSuccess: async () => {
+      await await1s();
+
+      await refreshInteractionData();
       refetch();
       inputRef.current!.value = "";
     },
@@ -59,7 +63,7 @@ const DiscussionModal = ({
       });
     }
   };
-  console.log(currentDiscussion);
+  //console.log(currentDiscussion);
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />

@@ -1,6 +1,9 @@
+import { ModalContext } from "@/component/common/error-modal";
 import { packNewInteractionTxb } from "@/sui-api";
+import { UseDisclosureProps } from "@chakra-ui/react";
 import { useSignAndExecuteTransactionBlock } from "@mysten/dapp-kit";
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
+import { useContext } from "react";
 
 type CreateNewVoting = {
   cardId: string;
@@ -12,9 +15,12 @@ type CreateNewVoting = {
 type UseCreateVotingProps = UseMutationOptions<any, Error, CreateNewVoting>;
 
 const useCreateVoting = (options: UseCreateVotingProps) => {
+  const errorDisclosure = useContext<UseDisclosureProps>(ModalContext);
   const { mutateAsync } = useSignAndExecuteTransactionBlock({
-    onError: (error) => {
-      console.error("Error signing and executing transaction block", error);
+    onError: (e) => {
+      if (!e.message.includes("Rejected from user")) {
+        errorDisclosure.onOpen?.();
+      }
     },
   });
   return useMutation({
@@ -29,7 +35,6 @@ const useCreateVoting = (options: UseCreateVotingProps) => {
       description: string;
       options: string[];
     }) => {
-      console.log("creating voting", title, cardId, description);
       const ptb = await packNewInteractionTxb(
         cardId,
         0,
@@ -37,7 +42,7 @@ const useCreateVoting = (options: UseCreateVotingProps) => {
         description,
         options
       );
-      console.log("ptb", ptb);
+
       return await mutateAsync({
         transactionBlock: ptb,
         options: {

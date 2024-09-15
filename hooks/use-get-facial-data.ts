@@ -12,7 +12,7 @@ import {
   WithAge,
   WithGender,
 } from "face-api.js";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 type UseGetFacialDateOption = UseMutationOptions<
   WithAge<
@@ -33,6 +33,8 @@ type UseGetFacialDateOption = UseMutationOptions<
 
 const useGetFacialData = (options?: UseGetFacialDateOption) => {
   const streamRef = useRef<MediaStream | null>(null);
+  const [hint, setHint] = useState<string>();
+  const timerRef = useRef<number>(0);
   const percentage = useRef<number>(0);
   const highestSource = useRef<{
     score: number;
@@ -52,7 +54,7 @@ const useGetFacialData = (options?: UseGetFacialDateOption) => {
     score: 0,
   });
 
-  return useMutation({
+  const mutation = useMutation({
     mutationFn: async () => {
       let currentPercentage = 0;
       const getFacialPromise = new Promise<
@@ -69,8 +71,6 @@ const useGetFacialData = (options?: UseGetFacialDateOption) => {
           >
         >
       >((resolve, reject) => {
-        // /temp
-        // resolve("temp");
         const video = document.getElementById("video") as HTMLVideoElement;
         const canvas = document.getElementById("overlay") as HTMLCanvasElement;
         const ctx = canvas.getContext("2d");
@@ -103,6 +103,7 @@ const useGetFacialData = (options?: UseGetFacialDateOption) => {
         // Function to detect faces
         async function detectFaces() {
           const interval = setInterval(async () => {
+            timerRef.current += 10;
             const source = await detectSingleFace(video)
               .withFaceLandmarks()
               .withFaceDescriptor()
@@ -146,6 +147,11 @@ const useGetFacialData = (options?: UseGetFacialDateOption) => {
               resolve(highestSource.current.source);
             }
             update();
+            if (timerRef.current > 4000 && !hint) {
+              setHint(
+                "Please make sure the evirovment is bright and your face is clear"
+              );
+            }
           }, 10);
         }
 
@@ -217,6 +223,7 @@ const useGetFacialData = (options?: UseGetFacialDateOption) => {
     },
     ...options,
   });
+  return { ...mutation, hint };
 };
 
 export default useGetFacialData;

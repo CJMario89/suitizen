@@ -26,7 +26,7 @@ const UserCommentCell = ({
         mt="1"
       >
         <Image
-          src={card?.cardImg ?? ""}
+          src={card?.pfpImg ?? ""}
           alt={card?.lastName ?? ""}
           width={20}
           height={20}

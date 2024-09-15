@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Text } from "@chakra-ui/react";
 import { getAnimationStyle } from "./animation-style";
 import useGetFacialData from "@/hooks/use-get-facial-data";
 import usePrepareScanning from "@/hooks/use-prepare-scannig";
@@ -20,6 +20,7 @@ export default function FaceDetectionBlock({
     mutate: getFacialData,
     isIdle,
     isSuccess,
+    hint,
   } = useGetFacialData({
     onSuccess: (data) => {
       onSuccess(JSON.stringify(data), data.gender);
@@ -84,6 +85,18 @@ export default function FaceDetectionBlock({
           alignItems="center"
           justifyContent="center"
         >
+          {hint && (
+            <Text
+              position="absolute"
+              top="12"
+              color="white"
+              bg="blackAlpha.700"
+              p="2"
+              borderRadius="md"
+            >
+              {hint}
+            </Text>
+          )}
           <Box
             height={`${videoHeight}px`}
             width={`${videoWidth}px`}

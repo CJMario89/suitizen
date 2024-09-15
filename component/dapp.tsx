@@ -16,7 +16,7 @@ const Dapp = ({ setPath }: { setPath: Dispatch<SetStateAction<string>> }) => {
       {!isSuitizen &&
         autoConnectStatus === "attempted" &&
         (!isPending || connectionStatus === "disconnected") && <Registry />}
-      <Box h="512px" w="512px" display="none">
+      <Box h="512px" w="512px" display="none" position="fixed">
         <canvas id="canvas" width="512" height="512" />
       </Box>
     </Flex>

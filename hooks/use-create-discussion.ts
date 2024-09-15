@@ -1,7 +1,9 @@
+import { ModalContext } from "@/component/common/error-modal";
 import { packNewInteractionTxb } from "@/sui-api";
+import { UseDisclosureProps } from "@chakra-ui/react";
 import { useSignAndExecuteTransactionBlock } from "@mysten/dapp-kit";
-import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
+import { useContext } from "react";
 
 type CreateNewDiscussion = {
   cardId: string;
@@ -16,9 +18,13 @@ type UseCreateDiscussionProps = UseMutationOptions<
 >;
 
 const useCreateDiscussion = (options: UseCreateDiscussionProps) => {
+  const errorDisclosure = useContext<UseDisclosureProps>(ModalContext);
+
   const { mutateAsync } = useSignAndExecuteTransactionBlock({
-    onError: (error) => {
-      console.error("Error signing and executing transaction block", error);
+    onError: (e) => {
+      if (!e.message.includes("Rejected from user")) {
+        errorDisclosure.onOpen?.();
+      }
     },
   });
   return useMutation({
@@ -31,7 +37,6 @@ const useCreateDiscussion = (options: UseCreateDiscussionProps) => {
       cardId: string;
       description: string;
     }) => {
-      console.log("creating discussion", title, cardId, description);
       const ptb = await packNewInteractionTxb(
         cardId,
         1,
@@ -39,8 +44,7 @@ const useCreateDiscussion = (options: UseCreateDiscussionProps) => {
         description,
         []
       );
-      console.log("ptb", ptb);
-      return await mutateAsync({
+      const result = await mutateAsync({
         transactionBlock: ptb,
         options: {
           showBalanceChanges: true,
@@ -51,6 +55,7 @@ const useCreateDiscussion = (options: UseCreateDiscussionProps) => {
           showRawInput: true,
         },
       });
+      return result;
     },
     ...options,
   });

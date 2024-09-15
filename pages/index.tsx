@@ -1,8 +1,9 @@
 import Dapp from "@/component/dapp";
 import Main from "@/component/main";
 import Proposal from "@/component/proposal";
+import { refreshInteractionData } from "@/sui-api";
 import Head from "next/head";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 function Home({
   path,
@@ -11,7 +12,9 @@ function Home({
   path: string;
   setPath: Dispatch<SetStateAction<string>>;
 }) {
-  console.log(path === "/community");
+  useEffect(() => {
+    refreshInteractionData();
+  }, []);
   return (
     <>
       <Head>

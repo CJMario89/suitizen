@@ -1,5 +1,5 @@
 import useGetNameService, { NameService } from "@/hooks/use-get-name-service";
-import { Box, Button, Flex, Heading, Link, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Link } from "@chakra-ui/react";
 import { getAnimationStyle } from "./animation-style";
 import Image from "next/image";
 
@@ -14,8 +14,8 @@ const NameServiceBlock = ({
   onSelected: (nameService?: NameService) => void;
   onConfirm: () => void;
 }) => {
-  const { data, isPending } = useGetNameService();
-  console.log(selectedNameService);
+  const { data, isPending, refetch, isFetching } = useGetNameService();
+
   return (
     <Flex
       position="absolute"
@@ -25,10 +25,9 @@ const NameServiceBlock = ({
       h="full"
       layerStyle="card"
       justifyContent="space-between"
-      p="4"
       {...getAnimationStyle(0, step)}
     >
-      <Flex gap="4" h="full">
+      <Flex gap="4" h="full" flexWrap="wrap" maxH="500px" overflow="auto" p="4">
         {!isPending && data?.length === 0 && (
           <Flex
             flexDirection="column"
@@ -84,17 +83,27 @@ const NameServiceBlock = ({
           </Box>
         ))}
       </Flex>
-      <Button
-        m="4"
-        variant="solid"
-        onClick={() => {
-          onConfirm();
-        }}
-        alignSelf="flex-end"
-        isDisabled={!selectedNameService}
-      >
-        Confirm
-      </Button>
+      <Flex gap="2" justifyContent="flex-end" alignItems="center" p="4">
+        <Button
+          variant="outline"
+          onClick={() => {
+            refetch();
+          }}
+          isLoading={isFetching}
+        >
+          Refresh
+        </Button>
+        <Button
+          variant="solid"
+          onClick={() => {
+            onConfirm();
+          }}
+          alignSelf="flex-end"
+          isDisabled={!selectedNameService}
+        >
+          Confirm
+        </Button>
+      </Flex>
     </Flex>
   );
 };

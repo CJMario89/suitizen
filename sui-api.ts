@@ -86,7 +86,7 @@ export async function packMintTxb(
     txb.object(SUI_CLOCK_ID),
   ];
 
-  console.log(args);
+  //console.log(args);
 
   txb.moveCall({
     target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${MINT_FUN}`,
@@ -103,7 +103,7 @@ export async function packNewInteractionTxb(
   description: string,
   contents: string[]
 ) {
-  console.log(cardId);
+  //console.log(cardId);
 
   let txb: TransactionBlock = new TransactionBlock();
 
@@ -132,9 +132,9 @@ export async function packVoteTxb(
   cardId: string,
   voteOption: number
 ) {
-  console.log(interactionId);
-  console.log(cardId);
-  console.log(voteOption);
+  //console.log(interactionId);
+  //console.log(cardId);
+  //console.log(voteOption);
 
   let txb: TransactionBlock = new TransactionBlock();
 
@@ -256,7 +256,7 @@ export async function getUserSuiNS(address: string) {
   });
   if (objectResponse.data) {
     for (let data of objectResponse.data) {
-      console.log(data.data);
+      //console.log(data.data);
       let vo: any = {};
       vo.objectId = data.data.objectId;
       vo.domainName = data.data.content.fields.domain_name;
@@ -284,7 +284,7 @@ export async function getUserSuitizenCard(address: string) {
   });
   if (objectResponse.data) {
     for (let data of objectResponse.data) {
-      console.log(data.data);
+      //console.log(data.data);
       let vo: any = {};
       vo.objectId = data.data.objectId;
       vo.cardImg = data.data.display.data.image_url;
@@ -293,6 +293,7 @@ export async function getUserSuitizenCard(address: string) {
       vo.firstName = data.data.content.fields.first_name;
       vo.lastName = data.data.content.fields.last_name;
       vo.birth = data.data.content.fields.birth;
+      vo.pfpImg = `${process.env.NEXT_PUBLIC_WALRUS_AGGREGATOR}/${data.data.content.fields.embedded_img}`;
       // vo.guardians = data.data.content.fields.guardians;
       vo.backup = data.data.content.fields.backup;
       userSuitizenCardList.push(vo);
@@ -310,12 +311,12 @@ export async function checkIndexExist(index: number) {
     },
   });
   if (objectResponse.data) {
-    console.log(objectResponse);
+    //console.log(objectResponse);
     let tableId: string =
       objectResponse.data.content.fields.pfp_tab.fields.id.id;
     let tableVo: any = await getTableData(tableId, null, null);
     if (tableVo.tableMap.size > 0) {
-      console.log(tableVo.tableMap.has(index.toString()));
+      //console.log(tableVo.tableMap.has(index.toString()));
       return tableVo.tableMap.has(index.toString());
     } else {
       return false;
@@ -400,7 +401,7 @@ export async function getInteraction(
 
     return vo;
   } catch (e) {
-    console.error("獲取文檔時出錯: ", e);
+    //console.error("獲取文檔時出錯: ", e);
     return {};
   }
 }
@@ -415,7 +416,7 @@ export async function getCarIddByName(name: string) {
     },
   });
   if (objectResponse.data) {
-    console.log(objectResponse);
+    //console.log(objectResponse);
     let tableId: string =
       objectResponse.data.content.fields.reg_tab.fields.id.id;
     let tableVo: any = await getTableData(tableId, null, null);
@@ -451,7 +452,7 @@ export async function getCarIddByName(name: string) {
 //     txb.pure.address(guardianCardId)
 //   ];
 
-//   console.log(args);
+//   //console.log(args);
 
 //   txb.moveCall({
 //     target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${ADD_GUARDIAN_FUN}`,
@@ -480,7 +481,7 @@ export async function getCarIddByName(name: string) {
 //     txb.pure.address(guardianCardId)
 //   ];
 
-//   console.log(args);
+//   //console.log(args);
 
 //   txb.moveCall({
 //     target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${REMOVE_GUARDIAN_FUN}`,
@@ -504,7 +505,7 @@ export async function getCarIddByName(name: string) {
 //     txb.object(cardId)
 //   ];
 
-//   console.log(args);
+//   //console.log(args);
 
 //   txb.moveCall({
 //     target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${NEW_TRANSFER_REQUEST_FUN}`,
@@ -527,7 +528,7 @@ export async function getCarIddByName(name: string) {
 //     }
 //   });
 //   if (objectResponse.data) {
-//     console.log(objectResponse);
+//     //console.log(objectResponse);
 //     let tableId: string = "";
 //     if (type == 0){
 //       // 查自己發起的請求
@@ -548,7 +549,7 @@ export async function getCarIddByName(name: string) {
 //               }
 //             });
 //             if (transferShardObjectResp.data) {
-//               console.log(transferShardObjectResp.data);
+//               //console.log(transferShardObjectResp.data);
 //               let requestVo: any = {};
 //               requestVo.cardId = transferShardObjectResp.data.content.fields.card_id;
 //               requestVo.confirmThreshold = transferShardObjectResp.data.content.fields.confirm_threshold;
@@ -579,7 +580,7 @@ export async function getCarIddByName(name: string) {
 //     txb.object(cardId)
 //   ];
 
-//   console.log(args);
+//   //console.log(args);
 
 //   txb.moveCall({
 //     target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${CANCEL_TRANSFER_REQUEST_FUN}`,
@@ -602,7 +603,7 @@ export async function getCarIddByName(name: string) {
 //     txb.object(requestId)
 //   ];
 
-//   console.log(args);
+//   //console.log(args);
 
 //   txb.moveCall({
 //     target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${CONFIRM_FUN}`,
@@ -625,7 +626,7 @@ export async function getCarIddByName(name: string) {
 //     txb.object(requestId)
 //   ];
 
-//   console.log(args);
+//   //console.log(args);
 
 //   txb.moveCall({
 //     target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${CANCEL_CONFIRM_FUN}`,
@@ -644,7 +645,7 @@ export async function packTransferCardTxb(cardId: string, index: number) {
     txb.pure.u64(index),
   ];
 
-  console.log(args);
+  //console.log(args);
 
   txb.moveCall({
     target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${TRANSFER_CARD_FUN}`,
@@ -663,7 +664,7 @@ export async function refreshInteractionData() {
     },
   });
   if (objectResponse.data) {
-    console.log(objectResponse);
+    //console.log(objectResponse);
 
     let voteTableId = objectResponse.data.content.fields.vote_tab.fields.id.id;
     let discussTableId =
@@ -699,7 +700,7 @@ export async function refreshInteractionData() {
       });
 
       if (dataResponse.data) {
-        console.log(dataResponse.data);
+        //console.log(dataResponse.data);
         let dataVo: any = {};
         dataVo.category = dataResponse.data.content.fields.category;
         dataVo.categoryStr = dataResponse.data.content.fields.category_str;
@@ -722,7 +723,7 @@ export async function refreshInteractionData() {
           },
         });
         if (dynamicData.data) {
-          console.log(dynamicData.data);
+          //console.log(dynamicData.data);
           let options: any[] = [];
           let dataContent: any = dynamicData.data.content;
           for (
@@ -731,7 +732,7 @@ export async function refreshInteractionData() {
             i++
           ) {
             let optionVo: any = dataContent.fields.value.fields.options[i];
-            console.log(optionVo);
+            //console.log(optionVo);
             options.push({
               index: i,
               amount: optionVo.fields.amount,
@@ -758,7 +759,7 @@ export async function refreshInteractionData() {
       });
 
       if (dataResponse.data) {
-        console.log(dataResponse.data);
+        //console.log(dataResponse.data);
         let dataVo: any = {};
         dataVo.category = dataResponse.data.content.fields.category;
         dataVo.categoryStr = dataResponse.data.content.fields.category_str;
@@ -781,12 +782,12 @@ export async function refreshInteractionData() {
           },
         });
         if (dynamicData.data) {
-          console.log(dynamicData.data);
+          //console.log(dynamicData.data);
           let comments: any[] = [];
           let dataContent: any = dynamicData.data.content;
           for (let i = 0; i < dataContent.fields.value.length; i++) {
             let commentVo: any = dataContent.fields.value[i];
-            console.log(commentVo);
+            //console.log(commentVo);
             comments.push({
               name: commentVo.fields.name,
               content: commentVo.fields.content,
@@ -823,8 +824,8 @@ export async function refreshInteractionData() {
 
     // 清掉 discuss 已不存在的文檔
     for (let objectId of discussDocumentIds) {
-      console.log(objectId);
-      console.log(discussList.includes(objectId));
+      //console.log(objectId);
+      //console.log(discussList.includes(objectId));
       if (!discussList.includes(objectId)) {
         let objectDoc = doc(discussDocRef, "data", objectId);
         // 刪除指定文檔
@@ -848,6 +849,8 @@ export async function getCardDetail(objectId: string) {
     let faceFeature = objectResponse.data.content.fields.face_feature;
     let firstName = objectResponse.data.content.fields.first_name;
     let lastName = objectResponse.data.content.fields.last_name;
+    let birth = objectResponse.data.content.fields.birth;
+    let pfpImg = `${process.env.NEXT_PUBLIC_WALRUS_AGGREGATOR}/${objectResponse.data.content.fields.embedded_img}`;
 
     return {
       objectId,
@@ -855,6 +858,8 @@ export async function getCardDetail(objectId: string) {
       faceFeature,
       firstName,
       lastName,
+      birth,
+      pfpImg,
     };
   }
   return cardDetail;
