@@ -38,7 +38,7 @@ const NameServiceBlock = ({
             alignItems="center"
             justifyContent="center"
           >
-            <Heading as="h3" color="white">
+            <Heading as="h3" color="white" textAlign="center">
               No name service found
             </Heading>
             <Link

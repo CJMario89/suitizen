@@ -88,7 +88,7 @@ export default function FaceDetectionBlock({
           {hint && (
             <Text
               position="absolute"
-              top="12"
+              top={{ base: "4px", md: "12" }}
               color="white"
               bg="blackAlpha.700"
               p="2"
