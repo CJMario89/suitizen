@@ -112,15 +112,13 @@ const Registry = () => {
       alignItems="center"
       // bg="darkTheme.800"
       p="8"
-      pt={step === -1 ? "8" : { base: "24", md: "8" }}
-      h="100vh"
+      pt="28"
       justifyContent="center"
     >
       {step === -1 && (
         <Flex
           flexDirection="column"
           alignItems="center"
-          pt="20"
           gap={{
             base: "4",
             md: "8",
