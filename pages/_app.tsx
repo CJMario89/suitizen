@@ -30,8 +30,6 @@ export default function App({
     },
   });
   const { networkConfig } = createNetworkConfig({
-    localnet: { url: getFullnodeUrl("localnet") },
-    mainnet: { url: getFullnodeUrl("mainnet") },
     testnet: { url: getFullnodeUrl("testnet") },
   });
   const [path, setPath] = useState("/");
